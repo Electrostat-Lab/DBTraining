@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/streams"
+    android:menuCategory="secondary"
+    android:title="I/O Streams"/>
+
+<item
+    android:menuCategory="secondary"
+    android:title="I/O Buffers"
+    />
+
+<item
+    android:menuCategory="secondary"
+    android:title="JSON"/>
+
+<item
+    android:menuCategory="secondary"
+    android:title="SQLite3"/>
+
+</menu>

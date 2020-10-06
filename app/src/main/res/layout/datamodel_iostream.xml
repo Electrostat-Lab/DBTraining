@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="20dp"
+        android:textColor="@color/lightGreen"
+        android:padding="20dp"
+        />
+    <TextView
+        android:id="@+id/data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="data"
+        android:textColor="@color/white"
+        android:padding="20dp"
+        />
+    <FrameLayout
+        android:id="@+id/editor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/item_background"
+        android:layout_gravity="center"
+        android:paddingEnd="35dp"
+        android:paddingStart="15dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="30dp"
+        >
+    <WebView
+        android:id="@+id/web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_baseline_laptop_windows_24"
+        android:layout_gravity="center"
+        android:isScrollContainer="true"
+        />
+    </FrameLayout>
+</LinearLayout>
