@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.scrappers.dbtraining">
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:icon="@mipmap/db_server_layer"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/db_server_layer"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainScreens.ioStreamScreen.runIOStreamInterface.runIOStreamInterface"></activity>
+        <activity android:name=".mainScreens.ioBufferScreen.runIOBufferInterface.runIOBufferInterface" />
+        <activity android:name=".mainScreens.ioStreamScreen.runIOStreamInterface.runIOStreamInterface" />
         <activity android:name=".HolderActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,8 +22,6 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 </manifest>

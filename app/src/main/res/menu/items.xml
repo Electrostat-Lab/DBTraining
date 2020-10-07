@@ -6,6 +6,7 @@
     android:title="I/O Streams"/>
 
 <item
+    android:id="@+id/buffers"
     android:menuCategory="secondary"
     android:title="I/O Buffers"
     />

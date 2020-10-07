@@ -12,6 +12,8 @@
     <color name="lightGreen">#A2FF08</color>
     <color name="plantGreen">#598A07</color>
     <color name="greenGold">#93C800</color>
+    <color name="goldGrid">#FFCB00</color>
+    <color name="gold">#F5DD00</color>
     <!-- BLUE -->
     <color name="cyan">#6597EC</color>
     <color name="darkBlue">#002A71</color>
@@ -22,4 +24,6 @@
     <color name="lightBlack">#585858</color>
     <color name="postLightBlack">#474747</color>
     <color name="white">#FFFFFF</color>
+    <color name="lowWhite">#D3D3D0</color>
+    <color name="transparent">#00393838</color>
 </resources>

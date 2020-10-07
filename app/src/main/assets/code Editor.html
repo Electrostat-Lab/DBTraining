@@ -5,7 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js" type="text/javascript" ></script>
 <style type="text/css">
     #editor {
-       height : 2000px
+       height : 5000px
     }
     </style>
 </head>
@@ -21,10 +21,7 @@
     editor.insert(CodeEditor.getCode());
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/"+CodeEditor.getMode());
-    editor.setSmoothScrolling();
-    var scroll=new ScrollBar(editor);
     editor.setReadOnly(true);
-    editor.alignCursors();
 
 </script>
 </body>

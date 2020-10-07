@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.ioStreamScreen.contentRecyclerView;
+package com.scrappers.dbtraining.contentRecyclerView;
 
 public class DataModel {
     private String title;

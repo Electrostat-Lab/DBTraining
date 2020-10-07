@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.ioStreamScreen.localDatabase;
+package com.scrappers.dbtraining.localDatabase;
 
 import android.content.Context;
 
@@ -20,12 +20,10 @@ public class LocalDatabase {
     }
     public String loadJSONFromAsset(String filename) {
         String json;
-        try {
-            InputStream is = context.getAssets().open(filename);
+        try (InputStream is = context.getAssets().open(filename)){
             int size = is.available();
             byte[] buffer = new byte[size];
             System.out.println(is.read(buffer));
-            is.close();
             json = new String(buffer, StandardCharsets.UTF_8);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DB Training</string>
+    <string name="app_name">DB CodeCamp</string>
+    <string name="java_io_streams">Java IO Streams</string>
+    <string name="java_io_buffers">Java I/O Buffers</string>
 </resources>

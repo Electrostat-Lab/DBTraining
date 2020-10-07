@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="200dp"
     android:background="@drawable/nav_header_background"
     android:layout_marginBottom="30dp">
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DB Training"
+        android:text="DB CodeCamp"
         android:textSize="30sp"
         android:textColor="@color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2020"
+            android:textSize="8sp"
+            android:textColor="@color/goldGrid"
+            android:layout_gravity="bottom"
+            tools:ignore="SmallSp" />
+    </LinearLayout>
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +43,7 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_btn"/>
         <ImageButton
+            android:id="@+id/aboutProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_person_24"

@@ -2,6 +2,7 @@ package com.scrappers.dbtraining.mainScreens.ioStreamScreen.runIOStreamInterface
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.ioStreamScreen.runIOStreamInterface.FileIO.FileIO;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class runIOStreamInterface extends AppCompatActivity {
 
@@ -18,6 +20,11 @@ public class runIOStreamInterface extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_i_o_stream_interface);
+
+        CardView animatorView=findViewById(R.id.animatorView);
+        animatorView.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.scale_lag));
+
+
         /*
          * define an Instance of your class
          */

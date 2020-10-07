@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.ioStreamScreen.contentRecyclerView;
+package com.scrappers.dbtraining.contentRecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.webkit.WebSettings;
 import android.widget.LinearLayout;
 
 import com.scrappers.dbtraining.R;
-import com.scrappers.dbtraining.mainScreens.ioStreamScreen.javaScriptInterface.CodeEditorInterface;
+import com.scrappers.dbtraining.javaScriptInterface.CodeEditorInterface;
 
 import java.util.ArrayList;
 

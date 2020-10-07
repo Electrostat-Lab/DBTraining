@@ -6,22 +6,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.scrappers.dbtraining.R;
-import com.scrappers.dbtraining.mainScreens.ioStreamScreen.contentRecyclerView.DataModel;
-import com.scrappers.dbtraining.mainScreens.ioStreamScreen.contentRecyclerView.ModelAdapter;
-import com.scrappers.dbtraining.mainScreens.ioStreamScreen.localDatabase.LocalDatabase;
+import com.scrappers.dbtraining.contentRecyclerView.DataModel;
+import com.scrappers.dbtraining.contentRecyclerView.ModelAdapter;
+import com.scrappers.dbtraining.localDatabase.LocalDatabase;
 import com.scrappers.dbtraining.mainScreens.ioStreamScreen.runIOStreamInterface.runIOStreamInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +40,11 @@ public class IOStreamScreen extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View viewInflater=inflater.inflate(R.layout.fragment_iostreams,container,false);
+        return inflater.inflate(R.layout.fragment_iostreams,container,false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View viewInflater, @Nullable Bundle savedInstanceState) {
         Toolbar toolbar=viewInflater.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,8 +52,7 @@ public class IOStreamScreen extends Fragment {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
-
+        ((TextView)viewInflater.findViewById(R.id.pageTitle)).setText(Objects.requireNonNull(getContext()).getResources().getText(R.string.java_io_streams));
         RecyclerView recyclerView=viewInflater.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         ArrayList<DataModel> models=new ArrayList<>();
@@ -73,6 +81,5 @@ public class IOStreamScreen extends Fragment {
                 startActivity(new Intent(getContext(), runIOStreamInterface.class));
             }
         });
-        return viewInflater;
     }
 }

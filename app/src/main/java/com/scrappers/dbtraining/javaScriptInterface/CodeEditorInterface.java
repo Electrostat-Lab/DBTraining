@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.ioStreamScreen.javaScriptInterface;
+package com.scrappers.dbtraining.javaScriptInterface;
 
 import android.content.Context;
 import android.webkit.JavascriptInterface;

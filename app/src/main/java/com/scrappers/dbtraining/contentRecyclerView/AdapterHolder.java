@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.ioStreamScreen.contentRecyclerView;
+package com.scrappers.dbtraining.contentRecyclerView;
 
 import android.annotation.SuppressLint;
 import android.view.View;
@@ -24,8 +24,5 @@ public class AdapterHolder extends RecyclerView.ViewHolder {
         title =itemView.findViewById(R.id.title);
         illustrations=itemView.findViewById(R.id.data);
         editor=itemView.findViewById(R.id.editor);
-
-
-
     }
 }
