@@ -5,7 +5,11 @@
     android:width="50dp"
     android:height="50dp"
     />
-    <solid android:color="@color/lightBlack"/>
+    <gradient
+        android:startColor="@color/lightBlack"
+        android:centerColor="@color/lightBlack"
+        android:endColor="@color/lightBlack"
+        android:gradientRadius="0"/>
     <stroke android:color="@color/postLightBlack"
         android:width="5dp"/>
     <corners android:topRightRadius="10dp"

@@ -1,6 +1,56 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+      <option name="IMPORT_LAYOUT_TABLE">
+        <value>
+          <package name="android" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="com" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="junit" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="net" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="org" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="java" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="javax" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="true" />
+          <emptyLine />
+        </value>
+      </option>
+    </JavaCodeStyleSettings>
+    <JetCodeStyleSettings>
+      <option name="PACKAGES_TO_USE_STAR_IMPORTS">
+        <value>
+          <package name="java.util" alias="false" withSubpackages="false" />
+          <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
+          <package name="io.ktor" alias="false" withSubpackages="true" />
+        </value>
+      </option>
+      <option name="PACKAGES_IMPORT_LAYOUT">
+        <value>
+          <package name="" alias="false" withSubpackages="true" />
+          <package name="java" alias="false" withSubpackages="true" />
+          <package name="javax" alias="false" withSubpackages="true" />
+          <package name="kotlin" alias="false" withSubpackages="true" />
+          <package name="" alias="true" withSubpackages="true" />
+        </value>
+      </option>
+    </JetCodeStyleSettings>
+    <ScalaCodeStyleSettings>
+      <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
+    </ScalaCodeStyleSettings>
+    <codeStyleSettings language="JAVA">
+      <option name="SPACE_WITHIN_IF_PARENTHESES" value="true" />
+      <option name="SPACE_BEFORE_IF_LBRACE" value="false" />
+    </codeStyleSettings>
     <codeStyleSettings language="XML">
+      <option name="FORCE_REARRANGE_MODE" value="1" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
       </indentOptions>
@@ -11,7 +61,6 @@
               <match>
                 <AND>
                   <NAME>xmlns:android</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -22,7 +71,6 @@
               <match>
                 <AND>
                   <NAME>xmlns:.*</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -34,7 +82,6 @@
               <match>
                 <AND>
                   <NAME>.*:id</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -45,7 +92,6 @@
               <match>
                 <AND>
                   <NAME>.*:name</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -56,7 +102,6 @@
               <match>
                 <AND>
                   <NAME>name</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -67,7 +112,6 @@
               <match>
                 <AND>
                   <NAME>style</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -78,7 +122,6 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -90,7 +133,6 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -102,7 +144,6 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
-                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>.*</XML_NAMESPACE>
                 </AND>
               </match>

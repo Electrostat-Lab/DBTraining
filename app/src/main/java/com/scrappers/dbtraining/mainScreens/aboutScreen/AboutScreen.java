@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class AboutScreen extends Fragment {
+    private RelativeLayout linearLayout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,12 +27,16 @@ public class AboutScreen extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        final RelativeLayout linearLayout=view.findViewById(R.id.aboutView);
+        linearLayout=view.findViewById(R.id.aboutView);
         linearLayout.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.thow_up));
         Navigation.drawerLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                linearLayout.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.thow_down));
+                try {
+                    linearLayout.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.thow_down));
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
                 return false;
             }
         });

@@ -1,16 +1,15 @@
 package com.scrappers.dbtraining;
 
+import android.os.Bundle;
+
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.PrefaceScreen;
+import com.scrappers.dbtraining.navigation.Navigation;
+import com.scrappers.superiorExtendedEngine.jmeSurfaceView.uiUtils.SystemVisibilityUI;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.os.Bundle;
-
-import com.scrappers.dbtraining.mainScreens.ioStreamScreen.IOStreamScreen;
-import com.scrappers.dbtraining.navigation.Navigation;
-
-import static com.scrappers.dbtraining.navigation.Navigation.drawerLayout;
 
 public class HolderActivity extends AppCompatActivity {
 
@@ -21,10 +20,16 @@ public class HolderActivity extends AppCompatActivity {
 
         Navigation navigation=new Navigation(HolderActivity.this);
         navigation.start();
-
-        displayWindow(new IOStreamScreen());
-
+        //display the default fragment screen
+        displayWindow(new PrefaceScreen());
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        SystemVisibilityUI systemVisibilityUI=new SystemVisibilityUI(HolderActivity.this);
+        systemVisibilityUI.setGameMode();
+    }
+
     private void displayWindow(@NonNull Fragment fragment){
         FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content,fragment);
