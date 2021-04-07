@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jme3.app.LegacyApplication;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Renderer;
@@ -39,7 +38,7 @@ public class PrefaceScreen extends Fragment {
             uiStateManager.getChildUiStateByIndex(0).
                     animate().translationYBy(200).setDuration(500).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById(0))).start();
         });
-        jmeSurfaceView.startRenderer(0);
+        jmeSurfaceView.startRenderer(400);
 
         jmeSurfaceView.setOnExceptionThrown(e -> {
 
