@@ -1,7 +1,7 @@
 package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
 import com.jme3.app.SimpleApplication;
-import com.scrappers.superiorExtendedEngine.jmeSurfaceView.JmeSurfaceView;
+import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 
 public class Renderer extends SimpleApplication {
     private final JmeSurfaceView jmeSurfaceView;

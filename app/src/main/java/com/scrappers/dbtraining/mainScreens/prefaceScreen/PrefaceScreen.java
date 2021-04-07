@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jme3.app.LegacyApplication;
+import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Renderer;
-import com.scrappers.superiorExtendedEngine.jmeSurfaceView.JmeSurfaceView;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
 
 import androidx.annotation.NonNull;
@@ -35,11 +35,11 @@ public class PrefaceScreen extends Fragment {
         UiStateManager uiStateManager=new UiStateManager(jmeSurfaceView);
         uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
         jmeSurfaceView.setLegacyApplication(new Renderer(jmeSurfaceView));
-        jmeSurfaceView.setOnRendererCompleted(application -> {
+        jmeSurfaceView.setOnRendererCompleted((application, settings) -> {
             uiStateManager.getChildUiStateByIndex(0).
                     animate().translationYBy(200).setDuration(500).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById(0))).start();
         });
-        jmeSurfaceView.startRenderer(1000);
+        jmeSurfaceView.startRenderer(0);
 
         jmeSurfaceView.setOnExceptionThrown(e -> {
 

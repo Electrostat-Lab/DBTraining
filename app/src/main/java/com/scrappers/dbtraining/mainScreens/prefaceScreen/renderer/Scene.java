@@ -1,6 +1,7 @@
 package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
 import com.jme3.app.Application;
+import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.input.ChaseCamera;
 import com.jme3.material.Material;
@@ -10,7 +11,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
-import com.scrappers.superiorExtendedEngine.jmeSurfaceView.JmeSurfaceView;
 
 public class Scene extends BaseAppState {
     private final Node rootNode;
@@ -18,7 +18,7 @@ public class Scene extends BaseAppState {
     private final JmeSurfaceView jmeSurfaceView;
     private final float ENV_TIME=2.5f;
     private float timer=0.0f;
-    public Scene(Node rootNode,JmeSurfaceView jmeSurfaceView){
+    public Scene(Node rootNode, JmeSurfaceView jmeSurfaceView){
         this.rootNode=rootNode;
         this.jmeSurfaceView=jmeSurfaceView;
     }

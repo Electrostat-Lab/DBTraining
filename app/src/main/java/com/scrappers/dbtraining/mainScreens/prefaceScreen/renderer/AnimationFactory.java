@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.jme3.app.Application;
+import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.R;
@@ -18,7 +19,6 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.EmitterTween;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.SimpleScaleTrack;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.StackLoops;
-import com.scrappers.superiorExtendedEngine.jmeSurfaceView.JmeSurfaceView;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStatesLooper;
 
