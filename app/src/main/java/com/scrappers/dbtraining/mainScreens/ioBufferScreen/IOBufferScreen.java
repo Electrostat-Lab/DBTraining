@@ -53,13 +53,13 @@ public class IOBufferScreen extends Fragment {
         try {
             JSONArray streams=localDatabase.getArray("buffers");
             models.add(new DataModel("BufferedReaders/BufferedWriters \n\n\t XML Preface",streams.getJSONObject(0).getString("preface xml"),
-                    streams.getJSONObject(0).getString("code xml"),"xml",4500));
+                    streams.getJSONObject(0).getString("code xml"),"xml",4500).setTheme("twilight"));
 
             models.add(new DataModel("READ/WRITE Class :",streams.getJSONObject(1).getString("preface java"),
-                    streams.getJSONObject(1).getString("code java"),"java",5500));
+                    streams.getJSONObject(1).getString("code java"),"java",5500).setTheme("eclipse"));
 
             models.add(new DataModel("Create an Activity Holder Class",streams.getJSONObject(1).getString("preface java activity"),
-                    streams.getJSONObject(1).getString("code java activity"),"java",2500));
+                    streams.getJSONObject(1).getString("code java activity"),"java",2500).setTheme("github"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

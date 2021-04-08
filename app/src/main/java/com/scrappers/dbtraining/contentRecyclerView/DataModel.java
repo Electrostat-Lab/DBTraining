@@ -5,6 +5,8 @@ public class DataModel {
     private String illustrations;
     private String code;
     private String mode;
+    //assigning a default value
+    private String theme="xcode";
     private int editorHeight;
 
     public DataModel(String title,String illustrations, String code, String mode, int editorHeight){
@@ -29,6 +31,15 @@ public class DataModel {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public DataModel setTheme(String theme) {
+        this.theme = theme;
+        return this;
+    }
+
+    public String getTheme() {
+        return theme;
     }
 
     public String getMode() {

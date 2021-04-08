@@ -44,11 +44,13 @@ public class ModelAdapter extends RecyclerView.Adapter<AdapterHolder> {
         webSettings.setSupportZoom(true);
         webSettings.setDisplayZoomControls(true);
         holder.editor.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,models.get(position).getEditorHeight()));
-        holder.webView.loadUrl("file:///android_asset/code Editor.html");
+        holder.webView.loadUrl("file:///android_asset/CodeEditor.html");
 
         CodeEditorInterface codeEditorInterface=new CodeEditorInterface(context);
         codeEditorInterface.setCode(models.get(position).getCode());
         codeEditorInterface.setMode(models.get(position).getMode());
+        codeEditorInterface.setContainerHeight(models.get(position).getEditorHeight());
+        codeEditorInterface.setTheme(models.get(position).getTheme());
         holder.webView.addJavascriptInterface(codeEditorInterface,"CodeEditor");
 
     }

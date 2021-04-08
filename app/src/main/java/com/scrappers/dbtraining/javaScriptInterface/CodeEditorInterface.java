@@ -7,7 +7,9 @@ public class CodeEditorInterface {
     private final Context context;
     private String code;
     private String mode;
+    private String theme;
     private int containerHeight;
+
     public CodeEditorInterface(Context context) {
         this.context=context;
     }
@@ -21,6 +23,7 @@ public class CodeEditorInterface {
     public void setCode(String code) {
         this.code = code;
     }
+    @JavascriptInterface
     public int getContainerHeight(){
         return containerHeight;
     }
@@ -35,5 +38,13 @@ public class CodeEditorInterface {
     @JavascriptInterface
     public String getMode() {
         return mode;
+    }
+    @JavascriptInterface
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+    @JavascriptInterface
+    public String getTheme() {
+        return theme;
     }
 }

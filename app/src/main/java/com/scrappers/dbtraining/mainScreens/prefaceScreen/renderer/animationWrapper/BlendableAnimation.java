@@ -79,11 +79,11 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         //8)Create ClipAction instances for the AnimClips (BlendableActions)
         ClipAction capRotationClip=new ClipAction(capRotationAnimClip);
         ClipAction bottleTractionClip=new ClipAction(bottleTractionAnimClip);
-        capRotationClip.setTransitionLength(200d);
-        bottleTractionClip.setTransitionLength(150d);
+        capRotationClip.setTransitionLength(2);
+        bottleTractionClip.setTransitionLength(2);
+        bottleTractionClip.setLength(200);
         //9)feed the BlendableActions to a single BlendAction
         BlendAction blendAction=new BlendAction(this,bottleTractionClip,capRotationClip);
-
         //10)add that BlendAction to the AnimComposer using addAction(...)
         animComposer.addAction("SimulateBottleFall",blendAction);
         //11)run this BlendAction in the default layer
@@ -115,8 +115,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     @Override
     public void setBlendAction(BlendAction action) {
         /*sets the length of transitions between keyFrames-delay time between keyFrames*/
-        action.setTransitionLength(200);
-        action.setSpeed(1);
+        action.setSpeed(5f);
     }
 
     /**

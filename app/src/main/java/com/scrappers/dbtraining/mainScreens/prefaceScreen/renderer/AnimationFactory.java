@@ -12,6 +12,7 @@ import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.R;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.AnimLayers;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.BasicArmature;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.BasicTween;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.BlendableAnimation;
@@ -60,6 +61,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 menu.findViewById(R.id.particleEmitter).setOnClickListener(this);
                 menu.findViewById(R.id.bottleFall).setOnClickListener(this);
                 menu.findViewById(R.id.blenderAnimations).setOnClickListener(this);
+                menu.findViewById(R.id.armatureMask).setOnClickListener(this);
 
         });
         getStateManager().attach(new SimpleScaleTrack("SimpleScaleTrack",dataBaseStack));
@@ -69,6 +71,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         getStateManager().attach(new EmitterTween("EmitterTween",dataBaseStack));
         getStateManager().attach(new BlendableAnimation("SimulateBottleFall",dataBaseStack));
         getStateManager().attach(new BlenderTween("BlenderImport",dataBaseStack));
+        getStateManager().attach(new AnimLayers("MultipleAnimLayers",dataBaseStack));
     }
 
     @Override
@@ -184,6 +187,14 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 activateButton(v);
             }else{
                 getStateManager().getState(BlenderTween.class).setEnabled(false);
+                deActivateButton(v);
+            }
+        }else if(v.getId()==R.id.armatureMask){
+            if(!getStateManager().getState(AnimLayers.class).isEnabled()){
+                getStateManager().getState(AnimLayers.class).setEnabled(true);
+                activateButton(v);
+            }else{
+                getStateManager().getState(AnimLayers.class).setEnabled(false);
                 deActivateButton(v);
             }
         }
