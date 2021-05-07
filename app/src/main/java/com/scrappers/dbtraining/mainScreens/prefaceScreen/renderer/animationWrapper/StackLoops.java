@@ -3,7 +3,10 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWra
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
 import com.jme3.anim.ArmatureMask;
+import com.jme3.anim.Joint;
+import com.jme3.anim.SkinningControl;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
@@ -33,26 +36,39 @@ public class StackLoops extends BaseAppState {
         Spatial stackOne= ((Node)dataBaseStack).getChild("Cylinder.001");
         Spatial stackTwo= ((Node)dataBaseStack).getChild("Cylinder.003");
 
+        final Joint jointOne = new Joint("JointOne");
+        final Joint jointTwo = new Joint("JointTwo");
+
+        /*create an armature , ie body to hold those joints*/
+        Armature armature=new Armature(new Joint[]{jointOne,jointTwo});
+        SkinningControl skinningControl=new SkinningControl(armature);
+        skinningControl.setHardwareSkinningPreferred(true);
+        /*notify this spatial of the incoming updates from the skinning control*/
+        skinningControl.setSpatial(dataBaseStack);
+        /*add models(or nodes or spatial) to the given Joints*/
+        skinningControl.getAttachmentsNode(jointOne.getName()).attachChild(stackOne);
+        skinningControl.getAttachmentsNode(jointTwo.getName()).attachChild(stackTwo);
+
         //Parallel Transform tracks
         final TransformTrack stackOneTrack=new TransformTrack();
         final TransformTrack stackTwoTrack=new TransformTrack();
 
-        stackOneTrack.setTarget(stackOne);
+        stackOneTrack.setTarget(jointOne);
         stackOneTrack.setTimes(new float[]{8,16,32,64});
         stackOneTrack.setKeyframesTranslation(new Vector3f[]{
-                stackOne.getLocalTranslation(),
-                stackOne.getLocalTranslation().subtract(new Vector3f(stackOne.getLocalScale().x+1f,0,0)),
-                stackOne.getLocalTranslation().subtract(new Vector3f(0,stackOne.getLocalScale().y+0.2f,0)),
-                stackOne.getLocalTranslation().add(new Vector3f(stackOne.getLocalScale().x,0,0)),
+                jointOne.getLocalTranslation(),
+                jointOne.getLocalTranslation().subtract(new Vector3f(stackOne.getLocalScale().x+1f,0,0)),
+                jointOne.getLocalTranslation().subtract(new Vector3f(0,stackOne.getLocalScale().y+0.2f,0)),
+                jointOne.getLocalTranslation().add(new Vector3f(stackOne.getLocalScale().x,0,0)),
         });
 
-        stackTwoTrack.setTarget(stackTwo);
+        stackTwoTrack.setTarget(jointTwo);
         stackTwoTrack.setTimes(new float[]{8,16,32,64});
         stackTwoTrack.setKeyframesTranslation(new Vector3f[]{
-                stackTwo.getLocalTranslation(),
-                stackTwo.getLocalTranslation().add(new Vector3f(stackTwo.getLocalScale().x+1f,0,0)),
-                stackTwo.getLocalTranslation().add(new Vector3f(0,stackTwo.getLocalScale().y+0.2f,0)),
-                stackTwo.getLocalTranslation().add(new Vector3f(-stackTwo.getLocalScale().x,0,0)),
+                jointTwo.getLocalTranslation(),
+                jointTwo.getLocalTranslation().add(new Vector3f(stackTwo.getLocalScale().x+1f,0,0)),
+                jointTwo.getLocalTranslation().add(new Vector3f(0,stackTwo.getLocalScale().y+0.2f,0)),
+                jointTwo.getLocalTranslation().add(new Vector3f(-stackTwo.getLocalScale().x,0,0)),
         });
         animClip.setTracks(new AnimTrack[]{stackOneTrack, stackTwoTrack});
         animComposer.addAnimClip(animClip);

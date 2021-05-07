@@ -115,7 +115,7 @@ public class SimpleScaleTrack extends BaseAppState {
             /*
              * start the animation
              */
-            animComposer.setCurrentAction("StackAnimation", LayerBuilder.LAYER_SIMPLE_TRACK);
+            animComposer.setCurrentAction("StackAnimation");
         }
     }
 
@@ -155,7 +155,7 @@ public class SimpleScaleTrack extends BaseAppState {
             /*
              * start the animation
              */
-            animComposer.removeCurrentAction(LayerBuilder.LAYER_SIMPLE_TRACK);
+            animComposer.removeCurrentAction();
         }
     }
     public interface AnimationEvents{

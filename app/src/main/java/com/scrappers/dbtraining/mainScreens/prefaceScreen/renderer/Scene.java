@@ -69,6 +69,10 @@ public class Scene extends BaseAppState {
         defaultTwo.set(((Node)dataBaseStack).getChild("Cylinder.002").getLocalTransform());
         defaultThree.set(((Node)dataBaseStack).getChild("Cylinder.003").getLocalTransform());
 
+        final AnimComposer animComposer = new AnimComposer();
+        animComposer.setEnabled(false);
+        dataBaseStack.addControl(animComposer);
+
     }
 
     @Override

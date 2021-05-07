@@ -30,7 +30,7 @@ public class AnimLayers extends BaseAppState {
         ArmatureMask armatureMask=new ArmatureMask();
         //add the StackOne Joint to the collection of the masked Joints
         armatureMask.addFromJoint(skinningControl.getArmature(),"StackOne");
-        AnimClip animClip=animComposer.getAnimClip("StackLoops");
+        AnimClip animClip=animComposer.getAnimClip("BasicArmature");
         animComposer.addAnimClip(animClip);
         BaseAction baseAction1=new BaseAction(Tweens.parallel(new ClipAction(animClip)));
         baseAction1.setSpeed(8f);

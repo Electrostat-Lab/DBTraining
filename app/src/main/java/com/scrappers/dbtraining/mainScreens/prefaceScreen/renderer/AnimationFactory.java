@@ -6,13 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.TransformTrack;
 import com.jme3.app.Application;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.math.Quaternion;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.R;
@@ -26,12 +24,9 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.StackLoops;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStatesLooper;
-
 import java.util.Objects;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -49,7 +44,6 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
     private final JmeSurfaceView jmeSurfaceView;
     private RelativeLayout menu;
     private UiStateManager uiStateManager;
-    private SimpleScaleTrack simpleScaleTrack;
     private static final float REANIMATE_TIME=2f;
     private float timer=0.0f;
     public AnimationFactory(Spatial dataBaseStack, JmeSurfaceView jmeSurfaceView) {
@@ -80,32 +74,32 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 menu.findViewById(R.id.armatureMask).setOnClickListener(this);
 
         });
-        simpleScaleTrack = new SimpleScaleTrack("SimpleScaleTrack",dataBaseStack);
+        SimpleScaleTrack simpleScaleTrack = new SimpleScaleTrack("SimpleScaleTrack", dataBaseStack);
         simpleScaleTrack.setAnimationEvents(new SimpleScaleTrack.AnimationEvents() {
             @Override
             public void onAnimationStart(AnimComposer animComposer, TransformTrack transformationStart) {
-                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()->{
-                    Toast.makeText(jmeSurfaceView.getContext(),"Track Started",LENGTH_SHORT).show();
-                });
+                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()-> Toast.makeText(jmeSurfaceView.getContext(),"Track Started",LENGTH_SHORT).show());
             }
 
             @Override
             public void onAnimationShuffle(AnimComposer animComposer, TransformTrack transform, int transform1, int transform2) {
-                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()->{
-                    Toast.makeText(jmeSurfaceView.getContext(),"Track Shuffled" + transform1+" "+transform2,LENGTH_SHORT).show();
-                });
+                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()-> Toast.makeText(jmeSurfaceView.getContext(),"Track Shuffled" + transform1+" "+transform2,LENGTH_SHORT).show());
 
             }
 
             @Override
             public void onAnimationEnd(AnimComposer animComposer, TransformTrack transformEnd) {
-                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()->{
-                    Toast.makeText(jmeSurfaceView.getContext(),"Track Finished",LENGTH_SHORT).show();
-                });
+                ((Activity)jmeSurfaceView.getContext()).runOnUiThread(()-> Toast.makeText(jmeSurfaceView.getContext(),"Track Finished",LENGTH_SHORT).show());
             }
         });
-        reAttachAllStates();
-    }
+        getStateManager().attach(simpleScaleTrack);
+        getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
+        getStateManager().attach(new BasicArmature("BasicArmatureTrack", dataBaseStack));
+        getStateManager().attach(new BasicTween("BasicTweenTrack", dataBaseStack));
+        getStateManager().attach(new EmitterTween("EmitterTween", dataBaseStack));
+        getStateManager().attach(new BlendableAnimation("SimulateBottleFall", dataBaseStack));
+        getStateManager().attach(new BlenderTween("BlenderImport", dataBaseStack));
+        getStateManager().attach(new AnimLayers("MultipleAnimLayers", dataBaseStack));    }
 
     @Override
     protected void cleanup(Application app) {
@@ -150,12 +144,9 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             menu.animate().translationYBy(-1200).setDuration(600).start();
 
         }
-        if(v.getId()==R.id.reset){
-            jmeSurfaceView.getLegacyApplication().enqueue(()->{
-                AnimComposer animComposer = dataBaseStack.getControl(AnimComposer.class);
-                dataBaseStack.removeControl(animComposer);
-                reAttachAllStates();
-            });
+        if(v.getId() == R.id.reset){
+            /*reset button*/
+            jmeSurfaceView.getLegacyApplication().enqueue(this::disableAllStates);
             uiStateManager.forEachUiState((UiStatesLooper.Modifiable.Looper) (currentView, position) -> {
                 deActivateButton(currentView.findViewById(R.id.simpleTrack));
                 deActivateButton(currentView.findViewById(R.id.stackLoops));
@@ -283,35 +274,30 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         Toast.makeText(jmeSurfaceView.getContext(),"Animation Stopped",Toast.LENGTH_LONG).show();
     }
 
-    protected void reAttachAllStates(){
+    /**
+     * <ul>
+     * <li>Intended to disable the clipActions from their corresponding AnimLayers</li>
+     * <li>Reset the current running animations to Spatial's default transformation</li>
+     * </ul>
+     */
+    protected void disableAllStates(){
         jmeSurfaceView.getLegacyApplication().enqueue(()->{
-            final AnimComposer animComposer = new AnimComposer();
-            animComposer.setEnabled(false);
-            dataBaseStack.addControl(animComposer);
-            if(getStateManager().hasState(getStateManager().getState(SimpleScaleTrack.class))){
-                getStateManager().detach(getStateManager().getState(SimpleScaleTrack.class));
-                getStateManager().detach(getStateManager().getState(StackLoops.class));
-                getStateManager().detach(getStateManager().getState(BasicArmature.class));
-                getStateManager().detach(getStateManager().getState(BasicTween.class));
-                getStateManager().detach(getStateManager().getState(EmitterTween.class));
-                getStateManager().detach(getStateManager().getState(BlendableAnimation.class));
-                getStateManager().detach(getStateManager().getState(BlenderTween.class));
-                getStateManager().detach(getStateManager().getState(AnimLayers.class));
-            }
-            if(!getStateManager().hasState(getStateManager().getState(SimpleScaleTrack.class))){
-                getStateManager().attach(simpleScaleTrack);
-                getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
-                getStateManager().attach(new BasicArmature("BasicArmatureTrack", dataBaseStack));
-                getStateManager().attach(new BasicTween("BasicTweenTrack", dataBaseStack));
-                getStateManager().attach(new EmitterTween("EmitterTween", dataBaseStack));
-                getStateManager().attach(new BlendableAnimation("SimulateBottleFall", dataBaseStack));
-                getStateManager().attach(new BlenderTween("BlenderImport", dataBaseStack));
-                getStateManager().attach(new AnimLayers("MultipleAnimLayers", dataBaseStack));
-            }
+            /*remove the current ClipActions from their corresponding layers (pause/stop the animation)*/
+            getStateManager().getState(SimpleScaleTrack.class).setEnabled(false);
+            getStateManager().getState(StackLoops.class).setEnabled(false);
+            getStateManager().getState(BasicArmature.class).setEnabled(false);
+            getStateManager().getState(BasicTween.class).setEnabled(false);
+            getStateManager().getState(EmitterTween.class).setEnabled(false);
+            getStateManager().getState(BlendableAnimation.class).setEnabled(false);
+            getStateManager().getState(BlenderTween.class).setEnabled(false);
+            getStateManager().getState(AnimLayers.class).setEnabled(false);
+            /*Animation reset for any instance implementing HasLocalTransform*/
+            dataBaseStack.setLocalTransform(defaultStack);
             ((Node)dataBaseStack).getChild("Cylinder.001").setLocalTransform(defaultOne);
             ((Node)dataBaseStack).getChild("Cylinder.002").setLocalTransform(defaultTwo);
             ((Node)dataBaseStack).getChild("Cylinder.003").setLocalTransform(defaultThree);
-            dataBaseStack.setLocalTransform(defaultStack);
+            /*get the joint of the armature & reset it*/
+            getStateManager().getState(BasicArmature.class).getJoint0().setLocalTransform(defaultOne);
         });
     }
 }

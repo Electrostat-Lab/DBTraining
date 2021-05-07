@@ -104,4 +104,12 @@ public class BasicArmature extends BaseAppState {
             animComposer.removeCurrentAction(LayerBuilder.LAYER_BASIC_ARMATURE);
         }
     }
+
+    public Joint getJoint0() {
+        return stackOne;
+    }
+
+    public void setStackTwo(Joint stackTwo) {
+        this.stackTwo = stackTwo;
+    }
 }
