@@ -3,10 +3,12 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWra
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
+import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
+import com.jme3.anim.tween.action.BlendAction;
 import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
@@ -42,7 +44,8 @@ import com.jme3.scene.Spatial;
  */
 public class BasicTween extends BaseAppState {
     private final Spatial dataBaseStack;
-    private final AnimComposer animComposer=new AnimComposer();
+    private AnimComposer animComposer;
+    private BaseAction baseAction;
 
     public BasicTween(String id,Spatial dataBaseStack){
         super(id);
@@ -51,12 +54,13 @@ public class BasicTween extends BaseAppState {
     @Override
     protected void initialize(Application app) {
         setEnabled(false);
+        animComposer = dataBaseStack.getControl(AnimComposer.class);
         Spatial stackOne= ((Node)dataBaseStack).getChild("Cylinder.001");
         Spatial stackTwo= ((Node)dataBaseStack).getChild("Cylinder.003");
 
         //AnimationClip
-        final AnimClip stackOneClip=new AnimClip("StackOneAnimation");
-        final AnimClip stackTwoClip=new AnimClip("StackTwoAnimation");
+        final AnimClip stackOneClip=new AnimClip("BasicTweenOne");
+        final AnimClip stackTwoClip=new AnimClip("BasicTweenTwo");
         //Transform tracks for each AnimClip
         final TransformTrack stackOneTrack=new TransformTrack();
         final TransformTrack stackTwoTrack=new TransformTrack();
@@ -90,18 +94,15 @@ public class BasicTween extends BaseAppState {
         //add the animation clips to the animation composer(manager)
         animComposer.addAnimClip(stackOneClip);
         animComposer.addAnimClip(stackTwoClip);
-        //add the Animation Composer AbstractControl to that Object(Spatial/Node)
-        dataBaseStack.addControl(animComposer);
 
         /*NB : new ClipAction(stackOneClip) is the same as animComposer.makeAction(stackTwoClip.getName()) , just an extra confusing data-Structure on the collection though , LoL*/
         ClipAction stackOneClipAction=new ClipAction(stackOneClip);
         Action stackTwoClipAction=animComposer.makeAction(stackTwoClip.getName());
         //base actions that can be triggered to run via makeAction() or action() from AnimComposer(Animation Manager)
-        BaseAction baseAction=new BaseAction(Tweens.parallel(stackOneClipAction,
+        baseAction=new BaseAction(Tweens.parallel(stackOneClipAction,
                 stackTwoClipAction));
         /* add the baseAction that holds the Tween thread actions , into a HashMap of General actions for each AnimComposer*/
         /*btw,this is still an idle action*/
-        animComposer.addAction("StackLoops",baseAction);
 
         //change some BaseAction,ClipActions settings
         //set the General speed for this whole BaseAction Tween based thread, ie it's applied on all of its child Tween & their ClipActions.
@@ -112,7 +113,8 @@ public class BasicTween extends BaseAppState {
         /*run this baseAction that has a Tween of actions , each of which has it's own AnimClip ,
          each AnimClip has it's own TransformTrack with Time Frames & Transformation keyFrames*/
         /*notice that we ran an existed(added before) Abstract Action to the AnimComposer*/
-        animComposer.setCurrentAction("StackLoops");
+        animComposer.makeLayer(LayerBuilder.LAYER_BASIC_TWEEN, new ArmatureMask());
+
     }
 
     @Override
@@ -122,11 +124,17 @@ public class BasicTween extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        animComposer.setEnabled(true);
+        if(animComposer != null){
+            animComposer.setEnabled(true);
+            animComposer.addAction("BasicTween",baseAction);
+            animComposer.setCurrentAction("BasicTween", LayerBuilder.LAYER_BASIC_TWEEN);
+        }
     }
 
     @Override
     protected void onDisable() {
-        animComposer.setEnabled(false);
+        if(animComposer != null){
+            animComposer.removeCurrentAction(LayerBuilder.LAYER_BASIC_TWEEN);
+        }
     }
 }

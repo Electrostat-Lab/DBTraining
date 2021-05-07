@@ -10,6 +10,7 @@ import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.aboutScreen.AboutScreen;
 import com.scrappers.dbtraining.mainScreens.ioBufferScreen.IOBufferScreen;
 import com.scrappers.dbtraining.mainScreens.ioStreamScreen.IOStreamScreen;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.PrefaceScreen;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,21 +38,23 @@ public class Navigation {
             }
         });
 
+        ImageButton jmePreface=navigationView.getHeaderView(0).findViewById(R.id.jmePreface);
+        jmePreface.setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            displayWindow(new PrefaceScreen());
+        });
         navigationView.bringToFront();
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case (R.id.streams):
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        displayWindow(new IOStreamScreen());
-                        break;
-                    case (R.id.buffers):
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        displayWindow(new IOBufferScreen());
-                }
-                return true;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case (R.id.streams):
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    displayWindow(new IOStreamScreen());
+                    break;
+                case (R.id.buffers):
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    displayWindow(new IOBufferScreen());
             }
+            return true;
         });
     }
     private void displayWindow(@NonNull Fragment fragment){

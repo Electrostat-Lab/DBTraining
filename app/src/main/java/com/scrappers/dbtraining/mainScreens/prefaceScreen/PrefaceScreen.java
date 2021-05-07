@@ -4,21 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Renderer;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
-
 import static com.scrappers.dbtraining.navigation.Navigation.drawerLayout;
 
 public class PrefaceScreen extends Fragment {
+    private JmeSurfaceView jmeSurfaceView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,15 +28,14 @@ public class PrefaceScreen extends Fragment {
         Toolbar toolbar=view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        JmeSurfaceView jmeSurfaceView=view.findViewById(R.id.jmeSurfaceView);
-        UiStateManager uiStateManager=new UiStateManager(jmeSurfaceView);
-        uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
+        jmeSurfaceView=view.findViewById(R.id.jmeSurfaceView);
         jmeSurfaceView.setLegacyApplication(new Renderer(jmeSurfaceView));
-        jmeSurfaceView.setOnRendererCompleted((application, settings) -> {
-            uiStateManager.getChildUiStateByIndex(0).
-                    animate().translationYBy(200).setDuration(500).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById(0))).start();
-        });
-        jmeSurfaceView.startRenderer(400);
+        jmeSurfaceView.startRenderer(100);
+        UiStateManager uiStateManager=new UiStateManager((ViewGroup) jmeSurfaceView.getParent());
+        uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
+        jmeSurfaceView.setOnRendererCompleted((application, settings) -> uiStateManager.getChildUiStateByIndex(0).
+                animate().translationY(-uiStateManager.getChildUiStateById('S').getLayoutParams().height*2)
+                .setDuration(500).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById('S'))).start());
 
         jmeSurfaceView.setOnExceptionThrown(e -> {
 
@@ -48,5 +45,6 @@ public class PrefaceScreen extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        jmeSurfaceView.destroy();
     }
 }

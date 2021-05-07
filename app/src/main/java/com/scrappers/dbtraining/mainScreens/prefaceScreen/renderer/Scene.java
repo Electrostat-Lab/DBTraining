@@ -1,5 +1,6 @@
 package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
+import com.jme3.anim.AnimComposer;
 import com.jme3.app.Application;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
@@ -7,6 +8,7 @@ import com.jme3.input.ChaseCamera;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -16,6 +18,11 @@ public class Scene extends BaseAppState {
     private final Node rootNode;
     private Spatial dataBaseStack;
     private final JmeSurfaceView jmeSurfaceView;
+    public static final Transform defaultStack = new Transform();
+    public static final Transform defaultOne = new Transform();
+    public static final Transform defaultTwo = new Transform();
+    public static final Transform defaultThree = new Transform();
+
     private final float ENV_TIME=2.5f;
     private float timer=0.0f;
     public Scene(Node rootNode, JmeSurfaceView jmeSurfaceView){
@@ -57,6 +64,10 @@ public class Scene extends BaseAppState {
         chaseCamera.setHideCursorOnRotate(true);
         rootNode.attachChild(dataBaseStack);
 
+        defaultStack.set(dataBaseStack.getLocalTransform());
+        defaultOne.set(((Node)dataBaseStack).getChild("Cylinder.001").getLocalTransform());
+        defaultTwo.set(((Node)dataBaseStack).getChild("Cylinder.002").getLocalTransform());
+        defaultThree.set(((Node)dataBaseStack).getChild("Cylinder.003").getLocalTransform());
 
     }
 

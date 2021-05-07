@@ -3,12 +3,16 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWra
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
+import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.TransformTrack;
+import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
+import com.jme3.anim.tween.action.BaseAction;
 import com.jme3.anim.tween.action.BlendAction;
 import com.jme3.anim.tween.action.BlendSpace;
 import com.jme3.anim.tween.action.BlendableAction;
 import com.jme3.anim.tween.action.ClipAction;
+import com.jme3.anim.tween.action.LinearBlendSpace;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
@@ -30,7 +34,9 @@ import com.jme3.scene.Spatial;
 public class BlendableAnimation extends BaseAppState implements BlendSpace {
     private final Spatial dataBaseStack;
     //create a global AnimComposer Control instance
-    private final AnimComposer animComposer=new AnimComposer();
+    private AnimComposer animComposer;
+    private ClipAction capRotationClip;
+    private BlendAction blendAction;
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -39,6 +45,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     protected void initialize(Application app) {
         //disabling the animation at the Start-up
         setEnabled(false);
+        animComposer = dataBaseStack.getControl(AnimComposer.class);
         //let's simulate a bottle glass fall on a floor..LoL
 
         //1) collect the objects , you want to animate
@@ -74,20 +81,22 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         //6)add the AnimClips to the AnimComposer , the adds part
         animComposer.addAnimClip(capRotationAnimClip);
         animComposer.addAnimClip(bottleTractionAnimClip);
-        //7)add the AnimComposer Control to the HasLocalTransform
-        dataBaseStack.getParent().addControl(animComposer);
         //8)Create ClipAction instances for the AnimClips (BlendableActions)
-        ClipAction capRotationClip=new ClipAction(capRotationAnimClip);
+        capRotationClip=new ClipAction(capRotationAnimClip);
         ClipAction bottleTractionClip=new ClipAction(bottleTractionAnimClip);
-        capRotationClip.setTransitionLength(2);
-        bottleTractionClip.setTransitionLength(2);
-        bottleTractionClip.setLength(200);
+        bottleTractionClip.setTransitionLength(10f);
+        bottleTractionClip.setLength(10f);
+        capRotationClip.setLength(10f);
+        capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
-        BlendAction blendAction=new BlendAction(this,bottleTractionClip,capRotationClip);
+        blendAction=new BlendAction(new LinearBlendSpace(5,10), bottleTractionClip, capRotationClip);
+        BaseAction baseAction=new BaseAction(Tweens.sequence(capRotationClip, blendAction));
+        baseAction.setLength(10f);
+        baseAction.setSpeed(2f);
         //10)add that BlendAction to the AnimComposer using addAction(...)
-        animComposer.addAction("SimulateBottleFall",blendAction);
-        //11)run this BlendAction in the default layer
-        animComposer.setCurrentAction("SimulateBottleFall");
+        animComposer.addAction("SimulateBottleFall", baseAction);
+        animComposer.makeLayer(LayerBuilder.LAYER_BLENDABLE_ANIM, new ArmatureMask());
+
     }
 
     @Override
@@ -97,14 +106,20 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
 
     @Override
     protected void onEnable() {
-        //bind the AnimComposer to the appState status.
-        animComposer.setEnabled(true);
+        if(animComposer != null){
+            //bind the AnimComposer to the appState status.
+            animComposer.setEnabled(true);
+            //11)run this BlendAction in the default layer
+            animComposer.setCurrentAction("SimulateBottleFall", LayerBuilder.LAYER_BLENDABLE_ANIM);
+
+        }
     }
 
     @Override
     protected void onDisable() {
-        //bind the AnimComposer to the appState status.
-        animComposer.setEnabled(false);
+        if(animComposer != null){
+            animComposer.removeCurrentAction(LayerBuilder.LAYER_BLENDABLE_ANIM);
+        }
     }
 
     /**
@@ -158,7 +173,8 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
      */
     @Override
     public float getWeight() {
-        return 0.8f;
+        capRotationClip.setCollectTransformDelegate(blendAction);
+        return 1.5f;
     }
 
     /**

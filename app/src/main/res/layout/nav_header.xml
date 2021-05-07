@@ -39,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_settings_24"
+            android:tint="@color/blackCat"
             android:backgroundTint="@color/white"
             android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_btn"/>
@@ -47,10 +48,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_person_24"
+            android:tint="@color/blackCat"
             android:background="@drawable/rounded_btn"
             android:backgroundTint="@color/white"
             android:layout_marginEnd="10dp"
             />
+            <ImageButton
+                android:id="@+id/jmePreface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_3d_rotation_24"
+                android:tint="@color/greenDash"
+                android:background="@drawable/rounded_btn"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_marginEnd="10dp"
+                />
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
