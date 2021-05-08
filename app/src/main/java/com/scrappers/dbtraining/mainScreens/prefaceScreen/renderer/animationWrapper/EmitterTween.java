@@ -32,6 +32,7 @@ public class EmitterTween extends BaseAppState {
     private final Spatial dataBaseStack;
     private AnimComposer animComposer;
     private AudioNode shockThunder;
+    private BaseAction shockMyScreen;
     public EmitterTween(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -291,7 +292,7 @@ public class EmitterTween extends BaseAppState {
 
         //Create a BaseAction that would hold a Tween thread to run these actions in parallel
         //bind electric sound to the tween of actions
-        BaseAction shockMyScreen=new BaseAction(Tweens.parallel(
+        shockMyScreen=new BaseAction(Tweens.parallel(
                 waves1ClipAction,waves2ClipAction,
                 waves3ClipAction,waves4ClipAction,
                 waves5ClipAction,waves6ClipAction,
@@ -304,6 +305,7 @@ public class EmitterTween extends BaseAppState {
         shockMyScreen.setSpeed(5f);
         //add the base actions to our idle actions stack
         animComposer.addAction("ShockMyScreen",shockMyScreen);
+        //make a new Animation Layer that would hold a one current running action.....
         animComposer.makeLayer(LayerBuilder.LAYER_EMITTER_TWEEN, new ArmatureMask());
 
     }
@@ -338,6 +340,8 @@ public class EmitterTween extends BaseAppState {
     @Override
     protected void onDisable() {
         if(animComposer != null){
+            /*removing the current Action from this playing layer, NB this doesn't remove the Action from the whole animComposer,
+             so no need to add the action with each enable state*/
             animComposer.removeCurrentAction(LayerBuilder.LAYER_EMITTER_TWEEN);
         }
         if(shockThunder!=null && shockThunder.getStatus()== AudioSource.Status.Playing){

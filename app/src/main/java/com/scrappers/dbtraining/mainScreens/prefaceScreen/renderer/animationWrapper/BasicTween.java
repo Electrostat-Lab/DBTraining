@@ -110,11 +110,9 @@ public class BasicTween extends BaseAppState {
         /*those has no effect , since those 2 ClipActions are constrained to a single BaseAction , if you need separate speeds , then separate BaseActions as well*/
         stackOneClipAction.setSpeed(-1f);
         stackTwoClipAction.setSpeed(-40);
-        /*run this baseAction that has a Tween of actions , each of which has it's own AnimClip ,
-         each AnimClip has it's own TransformTrack with Time Frames & Transformation keyFrames*/
-        /*notice that we ran an existed(added before) Abstract Action to the AnimComposer*/
-        animComposer.makeLayer(LayerBuilder.LAYER_BASIC_TWEEN, new ArmatureMask());
+        animComposer.addAction("BasicTween",baseAction);
 
+        animComposer.makeLayer(LayerBuilder.LAYER_BASIC_TWEEN, new ArmatureMask());
     }
 
     @Override
@@ -126,7 +124,9 @@ public class BasicTween extends BaseAppState {
     protected void onEnable() {
         if(animComposer != null){
             animComposer.setEnabled(true);
-            animComposer.addAction("BasicTween",baseAction);
+            /*run this baseAction that has a Tween of actions , each of which has it's own AnimClip ,
+            each AnimClip has it's own TransformTrack with Time Frames & Transformation keyFrames*/
+            /*notice that we ran an existed(added before) Abstract Action to the AnimComposer*/
             animComposer.setCurrentAction("BasicTween", LayerBuilder.LAYER_BASIC_TWEEN);
         }
     }

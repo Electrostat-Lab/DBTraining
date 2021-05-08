@@ -37,6 +37,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     private AnimComposer animComposer;
     private ClipAction capRotationClip;
     private BlendAction blendAction;
+    private BaseAction baseAction;
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -90,7 +91,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
         blendAction=new BlendAction(new LinearBlendSpace(5,10), bottleTractionClip, capRotationClip);
-        BaseAction baseAction=new BaseAction(Tweens.sequence(capRotationClip, blendAction));
+        baseAction=new BaseAction(Tweens.sequence(capRotationClip, blendAction));
         baseAction.setLength(10f);
         baseAction.setSpeed(2f);
         //10)add that BlendAction to the AnimComposer using addAction(...)

@@ -81,6 +81,7 @@ public class BasicArmature extends BaseAppState {
 
         animComposer.addAnimClip(animClip);
         dataBaseStack.addControl(skinningControl);
+        animComposer.addAction("BasicArmature", new ClipAction(animClip));
         //start the animation composer in the default layer.
         animComposer.makeLayer(LayerBuilder.LAYER_BASIC_ARMATURE, new ArmatureMask(armature));
     }
@@ -93,7 +94,6 @@ public class BasicArmature extends BaseAppState {
     protected void onEnable() {
         if(animComposer != null){
             animComposer.setEnabled(true);
-            animComposer.addAction("BasicArmature", new ClipAction(animClip));
             animComposer.setCurrentAction("BasicArmature", LayerBuilder.LAYER_BASIC_ARMATURE);
         }
     }
@@ -109,7 +109,7 @@ public class BasicArmature extends BaseAppState {
         return stackOne;
     }
 
-    public void setStackTwo(Joint stackTwo) {
-        this.stackTwo = stackTwo;
+    public Joint getJoint1() {
+        return stackTwo;
     }
 }

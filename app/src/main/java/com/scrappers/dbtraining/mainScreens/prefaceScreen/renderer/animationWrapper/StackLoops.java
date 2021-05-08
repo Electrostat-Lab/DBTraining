@@ -34,24 +34,21 @@ public class StackLoops extends BaseAppState {
         setEnabled(false);
         animComposer = dataBaseStack.getControl(AnimComposer.class);
         Spatial stackOne= ((Node)dataBaseStack).getChild("Cylinder.001");
-        Spatial stackTwo= ((Node)dataBaseStack).getChild("Cylinder.003");
+        Spatial stackTwo= ((Node)dataBaseStack).getChild("Cylinder.002");
 
-        final Joint jointOne = new Joint("JointOne");
-        final Joint jointTwo = new Joint("JointTwo");
 
-        /*create an armature , ie body to hold those joints*/
-        Armature armature=new Armature(new Joint[]{jointOne,jointTwo});
-        SkinningControl skinningControl=new SkinningControl(armature);
+        SkinningControl skinningControl=dataBaseStack.getControl(SkinningControl.class);
         skinningControl.setHardwareSkinningPreferred(true);
-        /*notify this spatial of the incoming updates from the skinning control*/
-        skinningControl.setSpatial(dataBaseStack);
         /*add models(or nodes or spatial) to the given Joints*/
-        skinningControl.getAttachmentsNode(jointOne.getName()).attachChild(stackOne);
-        skinningControl.getAttachmentsNode(jointTwo.getName()).attachChild(stackTwo);
+        skinningControl.getAttachmentsNode("StackOne").attachChild(stackOne);
+        skinningControl.getAttachmentsNode("StackTwo").attachChild(stackTwo);
 
         //Parallel Transform tracks
         final TransformTrack stackOneTrack=new TransformTrack();
         final TransformTrack stackTwoTrack=new TransformTrack();
+
+        final Joint jointOne = skinningControl.getArmature().getJoint("StackOne");
+        final Joint jointTwo = skinningControl.getArmature().getJoint("StackTwo");
 
         stackOneTrack.setTarget(jointOne);
         stackOneTrack.setTimes(new float[]{8,16,32,64});
@@ -65,14 +62,17 @@ public class StackLoops extends BaseAppState {
         stackTwoTrack.setTarget(jointTwo);
         stackTwoTrack.setTimes(new float[]{8,16,32,64});
         stackTwoTrack.setKeyframesTranslation(new Vector3f[]{
-                jointTwo.getLocalTranslation(),
-                jointTwo.getLocalTranslation().add(new Vector3f(stackTwo.getLocalScale().x+1f,0,0)),
-                jointTwo.getLocalTranslation().add(new Vector3f(0,stackTwo.getLocalScale().y+0.2f,0)),
-                jointTwo.getLocalTranslation().add(new Vector3f(-stackTwo.getLocalScale().x,0,0)),
+                stackTwo.getLocalTranslation(),
+                stackTwo.getLocalTranslation().add(new Vector3f(stackTwo.getLocalScale().x+1f,0,0)),
+                stackTwo.getLocalTranslation().add(new Vector3f(0,stackTwo.getLocalScale().y+0.2f,0)),
+                stackTwo.getLocalTranslation().add(new Vector3f(-stackTwo.getLocalScale().x,0,0)),
         });
         animClip.setTracks(new AnimTrack[]{stackOneTrack, stackTwoTrack});
         animComposer.addAnimClip(animClip);
+        //start the animation composer in the default layer.
+        animComposer.addAction(animClip.getName(), new ClipAction(animClip));
         animComposer.makeLayer(LayerBuilder.LAYER_STACKS, new ArmatureMask());
+
     }
 
     @Override
@@ -84,8 +84,6 @@ public class StackLoops extends BaseAppState {
     protected void onEnable() {
         if(animComposer != null){
             animComposer.setEnabled(true);
-            //start the animation composer in the default layer.
-            animComposer.addAction(animClip.getName(), new ClipAction(animClip));
             animComposer.setCurrentAction("StackLoops", LayerBuilder.LAYER_STACKS);
         }
     }

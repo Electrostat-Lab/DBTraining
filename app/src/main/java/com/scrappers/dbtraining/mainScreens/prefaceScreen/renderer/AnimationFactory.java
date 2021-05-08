@@ -2,6 +2,7 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
 import android.app.Activity;
 import android.graphics.drawable.GradientDrawable;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -27,7 +28,6 @@ import com.scrappers.superiorExtendedEngine.menuStates.UiStatesLooper;
 import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -42,6 +42,7 @@ import static com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene.
 public class AnimationFactory extends BaseAppState implements View.OnClickListener {
     private final Spatial dataBaseStack;
     private final JmeSurfaceView jmeSurfaceView;
+    private final DisplayMetrics displayMetrics = new DisplayMetrics();
     private RelativeLayout menu;
     private UiStateManager uiStateManager;
     private static final float REANIMATE_TIME=2f;
@@ -58,9 +59,9 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.reset).setOnClickListener(this);
 
                 menu = (RelativeLayout) uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.animation_selection_menu));
-                menu.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                menu.animate().translationYBy(1200).setDuration(500).start();
-                menu.setVisibility(GONE);
+                menu.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+                menu.animate().translationY(displayMetrics.heightPixels + menu.getLayoutParams().height).setDuration(600).start();
+                menu.setVisibility(INVISIBLE);
 
 
                 menu.findViewById(R.id.closeMenu).setOnClickListener(this);
@@ -93,19 +94,23 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             }
         });
         getStateManager().attach(simpleScaleTrack);
-        getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
         getStateManager().attach(new BasicArmature("BasicArmatureTrack", dataBaseStack));
+        getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
         getStateManager().attach(new BasicTween("BasicTweenTrack", dataBaseStack));
         getStateManager().attach(new EmitterTween("EmitterTween", dataBaseStack));
         getStateManager().attach(new BlendableAnimation("SimulateBottleFall", dataBaseStack));
         getStateManager().attach(new BlenderTween("BlenderImport", dataBaseStack));
-        getStateManager().attach(new AnimLayers("MultipleAnimLayers", dataBaseStack));    }
+        getStateManager().attach(new AnimLayers("MultipleAnimLayers", dataBaseStack));
+
+        ((Activity)jmeSurfaceView.getContext()).getWindowManager()
+                .getDefaultDisplay().getMetrics(displayMetrics);
+    }
 
     @Override
     protected void cleanup(Application app) {
         ((Activity)menu.getContext()).runOnUiThread(()->{
+            menu.animate().translationY(displayMetrics.heightPixels + menu.getLayoutParams().height).setDuration(600).start();
             menu.setVisibility(INVISIBLE);
-            menu.animate().translationYBy(1200).setDuration(500).start();
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.animationSettings).animate().setDuration(600).rotation(-45).start();
             uiStateManager.forEachUiState((UiStatesLooper.Modifiable.Looper) (currentView, position) -> {
                 deActivateButton(currentView);
@@ -141,7 +146,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
 
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.animationSettings).animate().setDuration(100).rotation(45).start();
             menu.setVisibility(VISIBLE);
-            menu.animate().translationYBy(-1200).setDuration(600).start();
+            menu.animate().translationY(displayMetrics.heightPixels - menu.getLayoutParams().height).setDuration(600).start();
 
         }
         if(v.getId() == R.id.reset){
@@ -162,7 +167,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         }else if(v.getId()==R.id.closeMenu){
 
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.animationSettings).animate().setDuration(600).rotation(-45).start();
-            menu.animate().translationYBy(1200).setDuration(600).withEndAction(()->menu.setVisibility(INVISIBLE)).start();
+            menu.animate().translationY(displayMetrics.heightPixels + menu.getLayoutParams().height).setDuration(600).start();
 
         }else if(v.getId()==R.id.simpleTrack){
 
@@ -292,12 +297,13 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             getStateManager().getState(BlenderTween.class).setEnabled(false);
             getStateManager().getState(AnimLayers.class).setEnabled(false);
             /*Animation reset for any instance implementing HasLocalTransform*/
-            dataBaseStack.setLocalTransform(defaultStack);
             ((Node)dataBaseStack).getChild("Cylinder.001").setLocalTransform(defaultOne);
             ((Node)dataBaseStack).getChild("Cylinder.002").setLocalTransform(defaultTwo);
             ((Node)dataBaseStack).getChild("Cylinder.003").setLocalTransform(defaultThree);
+            dataBaseStack.setLocalTransform(defaultStack);
             /*get the joint of the armature & reset it*/
             getStateManager().getState(BasicArmature.class).getJoint0().setLocalTransform(defaultOne);
+            getStateManager().getState(BasicArmature.class).getJoint1().setLocalTransform(defaultThree);
         });
     }
 }

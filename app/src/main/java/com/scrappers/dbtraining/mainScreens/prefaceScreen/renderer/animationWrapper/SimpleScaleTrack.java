@@ -100,6 +100,9 @@ public class SimpleScaleTrack extends BaseAppState {
         });
         /*sets the tracks of this animClip*/
         clip.setTracks(new AnimTrack[]{transformTrack});
+        /*
+         * start the animation
+         */
         animComposer.addAction(clip.getName(), new ClipAction(clip));
         animComposer.makeLayer(LayerBuilder.LAYER_SIMPLE_TRACK, new ArmatureMask());
     }
@@ -112,10 +115,7 @@ public class SimpleScaleTrack extends BaseAppState {
         if(animComposer != null){
             /*bind the animation Composer(animation Manager) to the AppState currentState*/
             animComposer.setEnabled(true);
-            /*
-             * start the animation
-             */
-            animComposer.setCurrentAction("StackAnimation");
+            animComposer.setCurrentAction("StackAnimation", LayerBuilder.LAYER_SIMPLE_TRACK);
         }
     }
 
@@ -123,7 +123,7 @@ public class SimpleScaleTrack extends BaseAppState {
     public void update(float tpf) {
         if(animComposer.isEnabled() && animComposer != null){
             if (counter == 0){
-                //fire an event on the start of the Animation
+                //fire an event on the start of the Animation --works fine--
                 if ( animationEvents != null ){
                     animationEvents.onAnimationStart(animComposer, transformTrack);
                 }
@@ -132,7 +132,7 @@ public class SimpleScaleTrack extends BaseAppState {
             counter += tpf;
             keyFrameIndex += 1;
             if ( (keyFrameIndex < transformTrack.getTimes().length-1) && (counter  >= FastMath.interpolateLinear(1, transformTrack.getTimes()[keyFrameIndex-1], transformTrack.getTimes()[keyFrameIndex])) ){
-                //fire an event between the current interpolated frames
+                //fire an event between the current interpolated frames --Cannot figure this out--WIP--
                 if ( animationEvents != null ){
                     animationEvents.onAnimationShuffle(animComposer ,transformTrack, keyFrameIndex-1, keyFrameIndex);
                 }
@@ -155,7 +155,7 @@ public class SimpleScaleTrack extends BaseAppState {
             /*
              * start the animation
              */
-            animComposer.removeCurrentAction();
+            animComposer.removeCurrentAction(LayerBuilder.LAYER_SIMPLE_TRACK);
         }
     }
     public interface AnimationEvents{

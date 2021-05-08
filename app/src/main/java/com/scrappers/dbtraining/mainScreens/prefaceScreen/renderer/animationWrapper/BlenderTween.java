@@ -32,6 +32,7 @@ public class BlenderTween extends BaseAppState {
         final AnimClip animClip=animComposer.getAnimClip("Cylinder.001Action");
         final ClipAction clipAction=new ClipAction(animClip);
         baseAction=new BaseAction(Tweens.sineStep(clipAction,clipAction));
+        animComposer.addAction("CompositeAnimation",baseAction);
         animComposer.makeLayer(LayerBuilder.LAYER_BLENDER_TWEEN, new ArmatureMask());
     }
 
@@ -44,7 +45,6 @@ public class BlenderTween extends BaseAppState {
     protected void onEnable() {
         if ( animComposer != null ){
             animComposer.setEnabled(true);
-            animComposer.addAction("CompositeAnimation",baseAction);
             animComposer.setCurrentAction("CompositeAnimation", LayerBuilder.LAYER_BLENDER_TWEEN);
         }
     }
