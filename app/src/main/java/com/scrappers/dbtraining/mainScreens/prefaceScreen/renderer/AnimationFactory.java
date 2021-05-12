@@ -367,7 +367,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
 
         for (TriggerModel triggerModel : model) {
             RelativeLayout relativeLayout = (RelativeLayout) uiStateManager.fromXML(R.layout.menu_trigger);
-            relativeLayout.setPadding(10,10,10,10);
+            relativeLayout.setPadding(5,5,5,5);
             Button button = relativeLayout.findViewById(R.id.trigger);
             //relativeLayout.getPaddingEnd()*(uiPager.getColumnCount()-1) is the total length of the padding between the buttons only (excluding the sides, that's why (-1)), this number is zero when ColumnCount is 1
             button.setLayoutParams(new RelativeLayout.LayoutParams(displayMetrics.widthPixels/uiPager.getColumnCount() - relativeLayout.getPaddingEnd()*(uiPager.getColumnCount()-1),

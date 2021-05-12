@@ -2,14 +2,17 @@
 <RelativeLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/triggerContainer"
+    android:paddingTop="8dp"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 <Button
     android:id="@+id/trigger"
     android:layout_width="200dp"
     android:layout_height="300dp"
+    android:textSize="12sp"
     android:text="@string/insert_text_here"
     android:textColor="@color/pureWhite"
     android:background="@drawable/toolbar_background"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
+    android:padding="10dp"
     />
 </RelativeLayout>

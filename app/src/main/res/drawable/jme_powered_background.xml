@@ -6,9 +6,9 @@
         android:height="50dp"
         />
     <gradient
-        android:startColor="@color/gold"
+        android:startColor="@color/greenGold"
         android:centerColor="@color/lightBlack"
-        android:endColor="@color/gold"
+        android:endColor="@color/greenGold"
         android:gradientRadius="20"/>
 
     <stroke android:color="@color/postLightBlack"

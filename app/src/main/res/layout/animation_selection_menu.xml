@@ -4,6 +4,6 @@
     android:layout_height="1000px"
     android:layout_gravity="bottom"
     android:id="@+id/triggersMenu"
+    android:paddingTop="8dp"
     android:background="@drawable/toolbar_background">
-
 </RelativeLayout>

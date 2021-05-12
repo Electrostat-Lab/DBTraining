@@ -16,13 +16,13 @@
 
     <ImageView
         android:id="@+id/dismissForever"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:background="@drawable/round_button"
         android:layout_alignParentEnd="true"
-        android:padding="10dp"
-        android:src="@drawable/ic_twotone_disabled_by_default_24"
-        app:tint="@color/crimsonRed" />
+        android:padding="5dp"
+        android:src="@drawable/ic_baseline_close_24"
+         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
