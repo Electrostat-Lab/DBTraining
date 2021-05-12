@@ -2,6 +2,7 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
@@ -187,9 +188,11 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             if(gridOn){
                 gridOn = false;
                 ((ImageView)v).setImageDrawable(ContextCompat.getDrawable(jmeSurfaceView.getContext(), R.drawable.ic_baseline_grid_off_24));
+                ((ImageView)v).setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(uiStateManager.getContext(), R.color.opacifiedWhite)));
             }else{
                 gridOn = true;
                 ((ImageView)v).setImageDrawable(ContextCompat.getDrawable(jmeSurfaceView.getContext(), R.drawable.ic_baseline_grid_on_24));
+                ((ImageView)v).setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(uiStateManager.getContext(), R.color.gold)));
             }
             invalidateUiPager(gridOn);
         }else if(v.getId() == TriggerID.closeTrigger){
