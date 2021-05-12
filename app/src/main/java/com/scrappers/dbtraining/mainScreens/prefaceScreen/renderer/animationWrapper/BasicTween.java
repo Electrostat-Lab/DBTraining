@@ -8,13 +8,14 @@ import com.jme3.anim.TransformTrack;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
-import com.jme3.anim.tween.action.BlendAction;
 import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+
 /**
  * This class wraps multiple simple example for the new Animation System of Jme using multiple #{@link AnimClip}s , #{@link BaseAction}s , #{@link Tweens}.
  * , So this would be a brief preface on HOW the animation System works:
@@ -111,7 +112,6 @@ public class BasicTween extends BaseAppState {
         stackOneClipAction.setSpeed(-1f);
         stackTwoClipAction.setSpeed(-40);
         animComposer.addAction("BasicTween",baseAction);
-
         animComposer.makeLayer(LayerBuilder.LAYER_BASIC_TWEEN, new ArmatureMask());
     }
 

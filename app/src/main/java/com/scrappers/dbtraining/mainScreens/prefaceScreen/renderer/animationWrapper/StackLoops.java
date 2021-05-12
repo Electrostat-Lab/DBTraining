@@ -3,7 +3,6 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWra
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
-import com.jme3.anim.Armature;
 import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.Joint;
 import com.jme3.anim.SkinningControl;
@@ -14,6 +13,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
 
 /**
  * @author pavl_g.

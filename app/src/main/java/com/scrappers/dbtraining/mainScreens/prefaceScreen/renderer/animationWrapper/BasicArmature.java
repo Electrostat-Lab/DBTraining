@@ -14,7 +14,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
 
 /**
  * <b>A State class that wraps an example for a basic Armature Structure DataBaseStack 3D object with different Joints(Bones) that have some discs(cylinders)

@@ -5,26 +5,23 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.TransformTrack;
-import com.jme3.anim.tween.action.BaseAction;
 import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
-import com.jme3.app.state.BaseAppState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
 
 /**
  * @author pavl_g.
  */
-public class SimpleScaleTrack extends BaseAppState {
+public class SimpleScaleTrack extends AnimEventEntity {
     private final Spatial dataBaseStack;
     private  AnimComposer animComposer;
     private final TransformTrack transformTrack = new TransformTrack();
-    private float counter=0f;
-    private int keyFrameIndex=1;
-    private AnimationEvents animationEvents;
     /*
      * Create new AnimClip
      * Add the animClip to new AnimControl System(AnimComposer)
@@ -39,6 +36,8 @@ public class SimpleScaleTrack extends BaseAppState {
     protected void initialize(Application app) {
         setEnabled(false);
         animComposer = dataBaseStack.getControl(AnimComposer.class);
+        /*set the animComposer*/
+        setAnimComposer(animComposer);
         //1-Basic implementation of the animation tracks , using transformation matrices tracks(Scaling,Rotation,Translation).
         final Spatial stackOne = ((Node) dataBaseStack).getChild("Cylinder.002");
 
@@ -46,6 +45,8 @@ public class SimpleScaleTrack extends BaseAppState {
 
         /*set the bone or the spatial*/
         transformTrack.setTarget(stackOne);
+        /*set the transformTrack to be used by the animationEvents*/
+        setTransformTrack(transformTrack);
 
         //the frame tracks are in-sequence or in parallel with each transform track , notice it must be in a pattern form , in which the proceeding value
         //is delayed by (n) * the preceding value , n is scaleFactor of delayFactor , is determinant by the coder , here its simply 2.
@@ -115,38 +116,13 @@ public class SimpleScaleTrack extends BaseAppState {
         if(animComposer != null){
             /*bind the animation Composer(animation Manager) to the AppState currentState*/
             animComposer.setEnabled(true);
-            animComposer.setCurrentAction("StackAnimation", LayerBuilder.LAYER_SIMPLE_TRACK);
+            animComposer.setCurrentAction("StackAnimation");
         }
     }
 
     @Override
     public void update(float tpf) {
-        if(animComposer.isEnabled() && animComposer != null){
-            if (counter == 0){
-                //fire an event on the start of the Animation --works fine--
-                if ( animationEvents != null ){
-                    animationEvents.onAnimationStart(animComposer, transformTrack);
-                }
-            }
-            //start the frame timer by the time for the first keyFrame
-            counter += tpf;
-            keyFrameIndex += 1;
-            if ( (keyFrameIndex < transformTrack.getTimes().length-1) && (counter  >= FastMath.interpolateLinear(1, transformTrack.getTimes()[keyFrameIndex-1], transformTrack.getTimes()[keyFrameIndex])) ){
-                //fire an event between the current interpolated frames --Cannot figure this out--WIP--
-                if ( animationEvents != null ){
-                    animationEvents.onAnimationShuffle(animComposer ,transformTrack, keyFrameIndex-1, keyFrameIndex);
-                }
-            }else if (counter >= transformTrack.getLength()){
-                //fire an end event
-                if ( animationEvents != null ){
-                    animationEvents.onAnimationEnd(animComposer, transformTrack);
-                }
-                //reset everything
-                counter = 0;
-                keyFrameIndex = 1;
-            }
-
-        }
+        super.update(tpf);
     }
 
     @Override
@@ -155,16 +131,8 @@ public class SimpleScaleTrack extends BaseAppState {
             /*
              * start the animation
              */
-            animComposer.removeCurrentAction(LayerBuilder.LAYER_SIMPLE_TRACK);
+            animComposer.removeCurrentAction();
         }
     }
-    public interface AnimationEvents{
-        void onAnimationStart(AnimComposer animComposer, TransformTrack transformationStart);
-        void onAnimationEnd(AnimComposer animComposer, TransformTrack transformEnd);
-        void onAnimationShuffle(AnimComposer animComposer, TransformTrack transformTrack, int i, int keyFrameIndex);
-    }
 
-    public void setAnimationEvents(AnimationEvents animationEvents) {
-        this.animationEvents = animationEvents;
-    }
 }

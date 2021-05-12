@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
+import com.jme3.math.FastMath;
 import com.scrappers.dbtraining.R;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Renderer;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
@@ -33,9 +34,11 @@ public class PrefaceScreen extends Fragment {
         jmeSurfaceView.startRenderer(100);
         UiStateManager uiStateManager=new UiStateManager((ViewGroup) jmeSurfaceView.getParent());
         uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
-        jmeSurfaceView.setOnRendererCompleted((application, settings) -> uiStateManager.getChildUiStateByIndex(0).
-                animate().translationY(-uiStateManager.getChildUiStateById('S').getLayoutParams().height*2)
-                .setDuration(500).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById('S'))).start());
+        jmeSurfaceView.setOnRendererCompleted((application, settings) ->
+                uiStateManager.getChildUiStateByIndex(0).
+                animate().rotationBy(FastMath.interpolateLinear(uiStateManager.getChildUiStateByIndex(0).getRotation(), 180, 360))
+                .scaleX(0).scaleY(0).setDuration(1000).withEndAction(() -> uiStateManager.detachUiState(uiStateManager.getChildUiStateById('S'))).start()
+        );
 
         jmeSurfaceView.setOnExceptionThrown(e -> {
 

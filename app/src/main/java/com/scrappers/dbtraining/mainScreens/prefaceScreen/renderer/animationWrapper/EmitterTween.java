@@ -21,18 +21,29 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
 
 /**
  *
  * @author pavl_g.
  */
-public class EmitterTween extends BaseAppState {
+public class EmitterTween extends AnimEventEntity {
     private final Spatial dataBaseStack;
     private AnimComposer animComposer;
     private AudioNode shockThunder;
     private BaseAction shockMyScreen;
+    public ParticleEmitter electricWaves1;
+    public ParticleEmitter electricWaves2;
+    public ParticleEmitter electricWaves3;
+    public ParticleEmitter electricWaves4;
+    public ParticleEmitter electricWaves5;
+    public ParticleEmitter electricWaves6;
+    public ParticleEmitter electricWaves7;
+    public ParticleEmitter electricWaves8;
+    public ParticleEmitter electricWaves9;
+    public ParticleEmitter electricWaves10;
     public EmitterTween(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -41,18 +52,21 @@ public class EmitterTween extends BaseAppState {
     protected void initialize(Application app) {
         setEnabled(false);
         animComposer = dataBaseStack.getControl(AnimComposer.class);
-        shockThunder=loadElectricWaves();
+        setAnimComposer(animComposer);
+        setDelayStart(0.55f);
+        setDelayEnd(0f);
+        shockThunder = loadElectricWaves();
         //initialize the electricWaves particle Emitters instances w/ their properties.
-        ParticleEmitter electricWaves1=loadElectricWaves(0);
-        ParticleEmitter electricWaves2=loadElectricWaves(1);
-        ParticleEmitter electricWaves3=loadElectricWaves(2);
-        ParticleEmitter electricWaves4=loadElectricWaves(3);
-        ParticleEmitter electricWaves5=loadElectricWaves(4);
-        ParticleEmitter electricWaves6=loadElectricWaves(5);
-        ParticleEmitter electricWaves7=loadElectricWaves(6);
-        ParticleEmitter electricWaves8=loadElectricWaves(7);
-        ParticleEmitter electricWaves9=loadElectricWaves(8);
-        ParticleEmitter electricWaves10=loadElectricWaves(9);
+        electricWaves1 = loadElectricWaves(0);
+        electricWaves2 = loadElectricWaves(1);
+        electricWaves3 = loadElectricWaves(2);
+        electricWaves4 = loadElectricWaves(3);
+        electricWaves5 = loadElectricWaves(4);
+        electricWaves6 = loadElectricWaves(5);
+        electricWaves7 = loadElectricWaves(6);
+        electricWaves8 = loadElectricWaves(7);
+        electricWaves9 = loadElectricWaves(8);
+        electricWaves10 = loadElectricWaves(9);
 
         //set the local translation of them.
         electricWaves1.setLocalTranslation(dataBaseStack.getLocalTranslation().getX()-1f
@@ -139,6 +153,8 @@ public class EmitterTween extends BaseAppState {
         electricWavesTrack9.setTarget(electricWaves9);
         electricWavesTrack10.setTarget(electricWaves10);
         shockThunderTrack.setTarget(shockThunder);
+
+        setTransformTrack(electricWavesTrack1);
 
         //1st track
         electricWavesTrack1.setTimes(new float[]{2,4,8,16});
@@ -302,9 +318,9 @@ public class EmitterTween extends BaseAppState {
         ));
         //the speed
         shockMyScreen.setLength(20f);
-        shockMyScreen.setSpeed(5f);
+        shockMyScreen.setSpeed(10f);
         //add the base actions to our idle actions stack
-        animComposer.addAction("ShockMyScreen",shockMyScreen);
+        animComposer.addAction("ShockMyScreen", shockMyScreen);
         //make a new Animation Layer that would hold a one current running action.....
         animComposer.makeLayer(LayerBuilder.LAYER_EMITTER_TWEEN, new ArmatureMask());
 
@@ -350,22 +366,22 @@ public class EmitterTween extends BaseAppState {
     }
     private ParticleEmitter loadElectricWaves(int id){
             ParticleEmitter electricWaves = new ParticleEmitter("ElectricShocks "+id, ParticleMesh.Type.Triangle, 500);
-            electricWaves.setParticlesPerSec(FastMath.pow(5,5));
+            electricWaves.setParticlesPerSec(FastMath.pow(5,3));
             Material electrics = new Material(getApplication().getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
             electrics.setBoolean("PointSprite",true);
             electrics.setTexture("Texture", getApplication().getAssetManager().loadTexture("AssetsForRenderer/Textures/Fire.png"));
             electrics.setTexture("GlowMap", getApplication().getAssetManager().loadTexture("AssetsForRenderer/Textures/Fire.png"));
             electrics.selectTechnique("Glow",getApplication().getRenderManager());
-            electrics.setColor("GlowColor",ColorRGBA.Cyan);
+            electrics.setColor("GlowColor",ColorRGBA.Blue.mult(50f));
             electricWaves.setMaterial(electrics);
-            electricWaves.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO.negate().mult(3.5f));
+            electricWaves.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO.negate().mult(5.5f));
             electricWaves.setImagesX(1);
             electricWaves.setImagesY(1);
             electricWaves.setStartColor(ColorRGBA.White.mult(ColorRGBA.Blue));
             electricWaves.setEndColor(ColorRGBA.Blue);
             electricWaves.setStartSize(0.05f);
-            electricWaves.setEndSize(0.02f);
-            electricWaves.setGravity(electricWaves.getParticleInfluencer().getInitialVelocity().mult(2f));
+            electricWaves.setEndSize(0.025f);
+            electricWaves.setGravity(electricWaves.getParticleInfluencer().getInitialVelocity().mult(20f));
             electricWaves.setLowLife(0.2f);
             electricWaves.setHighLife(1f);
         return electricWaves;
@@ -395,5 +411,11 @@ public class EmitterTween extends BaseAppState {
             rotations[pos] = model.getLocalTransform().getRotation().fromAngleAxis(anglePerKeyFrame,rotationAxis);
         }
         return rotations;
+    }
+
+
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
     }
 }

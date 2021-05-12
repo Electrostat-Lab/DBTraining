@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="300dp"
+    android:layout_height="120dp"
+    android:id="@+id/triggerContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<Button
+    android:id="@+id/trigger"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="@string/insert_text_here"
+    android:textColor="@color/pureWhite"
+    android:background="@drawable/toolbar_background"
+    android:layout_margin="10dp"
+    />
+</RelativeLayout>
