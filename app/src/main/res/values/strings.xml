@@ -3,4 +3,5 @@
     <string name="java_io_streams">Java IO Streams</string>
     <string name="java_io_buffers">Java I/O Buffers</string>
     <string name="insert_text_here">## Insert Text Here ##</string>
+    <string name="welcome_to_jme">JME Android</string>
 </resources>

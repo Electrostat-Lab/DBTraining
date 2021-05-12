@@ -1,6 +1,9 @@
 package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer;
 
+import android.animation.Animator;
 import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -8,7 +11,10 @@ import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -38,6 +44,7 @@ import com.scrappers.superiorExtendedEngine.menuStates.uiPager.UiPager;
 import java.util.Objects;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_LONG;
@@ -82,8 +89,14 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             menu.setHorizontalScrollBarEnabled(true);
             //uiPager starts here......
             UiPager uiPager = new UiPager(menu.getContext());
-            uiPager.setLayoutTransition(new LayoutTransition());
-            uiPager.setLayoutParams(menu.getLayoutParams());
+            LayoutTransition layoutTransition = new LayoutTransition();
+            Animator animator = ObjectAnimator.ofPropertyValuesHolder(PropertyValuesHolder.ofFloat("translateX", uiPager.getLayoutParams().width, 0),
+                    PropertyValuesHolder.ofFloat("translateY", uiPager.getLayoutParams().height, 0));
+            animator.setDuration(300);
+            animator.setStartDelay(100);
+            animator.setInterpolator(new AccelerateInterpolator());
+            layoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, animator);
+            uiPager.setLayoutTransition(layoutTransition);
             ScrollView scrollableContainer = uiPager.initializeScrollableContainer();
             scrollableContainer.setHorizontalScrollBarEnabled(true);
             scrollableContainer.setId(SCROLLABLE_CONTENT);
@@ -177,9 +190,13 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             /*reset button*/
             jmeSurfaceView.getLegacyApplication().enqueue(this::disableAllStates);
             UiPager uiPager = (UiPager) ((ScrollView)uiStateManager.getChildUiStateById(SCROLLABLE_CONTENT)).getChildAt(0);
+            invalidateUiPager(gridOn);
             uiPager.forEachUiState((UiStatesLooper.Modifiable.Looper) (currentView, position) -> {
-                if(((ViewGroup) currentView).getChildAt(0).getId() != TriggerID.closeTrigger){
-                    deActivateButton(((ViewGroup) currentView).getChildAt(0));
+                if(uiPager.hasUiStateByIndex(position)){
+                    if (((ViewGroup) currentView).getChildAt(0).getId() != TriggerID.closeTrigger &&
+                            ((ViewGroup) currentView).getChildAt(0).getId() != R.id.container ){
+                        deActivateButton(((ViewGroup) currentView).getChildAt(0));
+                    }
                 }
             });
             Toast.makeText(jmeSurfaceView.getContext(),"Resettled the Scene !", LENGTH_LONG).show();
@@ -194,7 +211,14 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 ((ImageView)v).setImageDrawable(ContextCompat.getDrawable(jmeSurfaceView.getContext(), R.drawable.ic_baseline_grid_on_24));
                 ((ImageView)v).setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(uiStateManager.getContext(), R.color.gold)));
             }
+            ((GradientDrawable) Objects.requireNonNull(
+            ContextCompat.getDrawable(v.getContext(), R.drawable.toolbar_background))).setColors(new int[]{
+            ContextCompat.getColor(v.getContext(),R.color.lightBlack),ContextCompat.getColor(v.getContext(),
+            R.color.lightBlack),ContextCompat.getColor(v.getContext(),R.color.lightBlack)});
             invalidateUiPager(gridOn);
+        }else if(v.getId() == R.id.dismissForever){
+            ((ViewGroup)((ViewGroup)v.getParent()).getParent()).setVisibility(GONE);
+            Toast.makeText(jmeSurfaceView.getContext(), "Powered By Jme Android", Toast.LENGTH_LONG).show();
         }else if(v.getId() == TriggerID.closeTrigger){
 
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.animationSettings).animate().setDuration(600).rotation(-45).start();
@@ -313,19 +337,21 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
     protected void invalidateUiPager(boolean gridOn){
         UiPager uiPager = (UiPager) ((ScrollView)uiStateManager.getChildUiStateById(SCROLLABLE_CONTENT)).getChildAt(0);
         TriggerModel[] model = new TriggerModel[]{
-                new TriggerModel("Scale Track", TriggerID.simpleTrackTrigger, 0),
-                new TriggerModel("Basic Armature", TriggerID.basicArmatureTrigger, 1),
-                new TriggerModel("Stack Loops", TriggerID.stackLoopsTrigger, 2),
-                new TriggerModel("Basic Tween", TriggerID.basicTween, 3),
-                new TriggerModel("Emitter Tween", TriggerID.emitterTweenTrigger, 4),
-                new TriggerModel("Bottle Fall", TriggerID.blendableAnimTrigger, 5),
-                new TriggerModel("Blender Anim", TriggerID.blenderTweenTrigger, 6),
-                new TriggerModel("Composite", TriggerID.animLayersTrigger, 7),
-                new TriggerModel("Blank Field 0", 'B', 8),
-                new TriggerModel("Blank Field 1", 'B', 9),
-                new TriggerModel("Close Menu", TriggerID.closeTrigger, 10),
+                new TriggerModel("Scale Track", TriggerID.simpleTrackTrigger),
+                new TriggerModel("Basic Armature", TriggerID.basicArmatureTrigger),
+                new TriggerModel("Stack Loops", TriggerID.stackLoopsTrigger),
+                new TriggerModel("Basic Tween", TriggerID.basicTween),
+                new TriggerModel("Emitter Tween", TriggerID.emitterTweenTrigger),
+                new TriggerModel("Bottle Fall", TriggerID.blendableAnimTrigger),
+                new TriggerModel("Blender Anim", TriggerID.blenderTweenTrigger),
+                new TriggerModel("Composite", TriggerID.animLayersTrigger),
+                new TriggerModel("Blank Field 0", 'B'),
+                new TriggerModel("Blank Field 1", 'B'),
+                new TriggerModel("Close Menu", TriggerID.closeTrigger),
         };
-        uiPager.removeAllViews();
+        if(uiPager.hasUiStates()){
+            uiPager.detachAllUiStates();
+        }
         if(gridOn){
             uiPager.setColumnCount(3);
             uiPager.setRowCount(3);
@@ -333,9 +359,15 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             uiPager.setColumnCount(1);
             uiPager.setRowCount(1);
         }
+        RelativeLayout topUpMenu = (RelativeLayout) uiStateManager.fromXML(R.layout.top_up_menu);
+        topUpMenu.setLayoutParams(new GridLayout.LayoutParams(GridLayout.spec(0, uiPager.getColumnCount()),
+                GridLayout.spec(0, uiPager.getRowCount())));
+        topUpMenu.findViewById(R.id.container).findViewById(R.id.dismissForever).setOnClickListener(this);
+        uiPager.attachUiState(topUpMenu ,UiPager.SEQUENTIAL_ADD);
+
         for (TriggerModel triggerModel : model) {
             RelativeLayout relativeLayout = (RelativeLayout) uiStateManager.fromXML(R.layout.menu_trigger);
-            relativeLayout.setPadding(20,20,20,20);
+            relativeLayout.setPadding(10,10,10,10);
             Button button = relativeLayout.findViewById(R.id.trigger);
             //relativeLayout.getPaddingEnd()*(uiPager.getColumnCount()-1) is the total length of the padding between the buttons only (excluding the sides, that's why (-1)), this number is zero when ColumnCount is 1
             button.setLayoutParams(new RelativeLayout.LayoutParams(displayMetrics.widthPixels/uiPager.getColumnCount() - relativeLayout.getPaddingEnd()*(uiPager.getColumnCount()-1),
@@ -347,8 +379,11 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             if(triggerModel.getBtnID() == TriggerID.closeTrigger){
                 button.setBackgroundColor(Color.RED);
             }
-            uiPager.attachUiState(relativeLayout, triggerModel.getBtnIndex());
+            uiPager.attachUiState(relativeLayout, UiPager.SEQUENTIAL_ADD);
         }
+        uiPager.attachUiState(topUpMenu ,0);
+        uiPager.invalidate();
+
     }
 
     /**

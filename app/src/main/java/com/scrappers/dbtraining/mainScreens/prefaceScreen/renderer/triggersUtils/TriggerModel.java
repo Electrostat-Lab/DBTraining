@@ -3,12 +3,10 @@ package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.triggersUtil
 public class TriggerModel {
     private String btnText;
     private char btnID;
-    private int btnIndex;
 
-    public TriggerModel(final String btnText, final char btnID, final int btnIndex){
+    public TriggerModel(final String btnText, final char btnID){
         this.btnText = btnText;
         this.btnID = btnID;
-        this.btnIndex = btnIndex;
     }
 
     public String getBtnText() {
@@ -27,11 +25,4 @@ public class TriggerModel {
         this.btnID = btnID;
     }
 
-    public int getBtnIndex() {
-        return btnIndex;
-    }
-
-    public void setBtnIndex(int btnIndex) {
-        this.btnIndex = btnIndex;
-    }
 }

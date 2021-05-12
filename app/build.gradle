@@ -38,5 +38,5 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-core:3.4.0-beta3"
     implementation "org.jmonkeyengine:jme3-effects:3.4.0-beta3"
     implementation "org.jmonkeyengine:jme3-android-native:3.4.0-beta3"
-    implementation 'com.github.Scrappers-glitch:Superior-Extended-Engine:1.5.0-alpha'
+    implementation 'com.github.Scrappers-glitch:Superior-Extended-Engine:1.5.1-alpha2'
 }
