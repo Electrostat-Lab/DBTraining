@@ -13,7 +13,7 @@ DataBase Training App Android with CodeEditor ajax/ace.js API
 
 
 
-| Menu  | Multiple Anim Layers | Other App(Ace.js/Ajax Embedded Code Editor) |
+| Menu  | Multiple Layers | Other App(Ace.js/Ajax Embedded Code Editor) |
 |-------|------|------|
-| <img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210406-104526.png" width="200">  |<img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210512-160035789.jpg" width="200">
-|<img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210406-104543.png" width="200"> |
+| <img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210406-104526.png" width="200">  | <img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210512-160035789.jpg" width="200">
+| <img src="https://github.com/Scrappers-glitch/DBTraining/blob/master/attachments/Screenshot_20210406-104543.png" width="200"> |
