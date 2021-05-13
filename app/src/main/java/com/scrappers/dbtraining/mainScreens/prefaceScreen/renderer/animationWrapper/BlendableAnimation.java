@@ -16,6 +16,11 @@ import com.jme3.anim.tween.action.LinearBlendSpace;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.cinematic.Cinematic;
+import com.jme3.cinematic.events.AnimEvent;
+import com.jme3.cinematic.events.AnimationEvent;
+import com.jme3.cinematic.events.CinematicEvent;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -36,9 +41,11 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     private final Spatial dataBaseStack;
     //create a global AnimComposer Control instance
     private AnimComposer animComposer;
+    private LinearBlendSpace linearBlendSpace;
     private ClipAction capRotationClip;
     private BlendAction blendAction;
     private BaseAction baseAction;
+    private float count = 0;
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -91,12 +98,16 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         capRotationClip.setLength(10f);
         capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
-        blendAction=new BlendAction(new LinearBlendSpace(5,10), bottleTractionClip, capRotationClip);
+        float minValueOfBlendSlider = 6;
+        float maxValueOfBlendSlider = 12;
+        linearBlendSpace = new LinearBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
+        linearBlendSpace.setValue(FastMath.interpolateLinear(0.5f, 6, 12));
+        blendAction=new BlendAction(linearBlendSpace, capRotationClip, bottleTractionClip);
         baseAction=new BaseAction(Tweens.sequence(capRotationClip, blendAction));
         baseAction.setLength(10f);
         baseAction.setSpeed(2f);
         //10)add that BlendAction to the AnimComposer using addAction(...)
-        animComposer.addAction("SimulateBottleFall", baseAction);
+        animComposer.addAction("SimulateBottleFall", blendAction);
         animComposer.makeLayer(LayerBuilder.LAYER_BLENDABLE_ANIM, new ArmatureMask());
 
     }
@@ -121,6 +132,14 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     protected void onDisable() {
         if(animComposer != null){
             animComposer.removeCurrentAction(LayerBuilder.LAYER_BLENDABLE_ANIM);
+        }
+    }
+
+    @Override
+    public void update(float tpf) {
+        count += tpf;
+        if(count > blendAction.getLength()){
+            linearBlendSpace.setValue(FastMath.interpolateLinear(1, 6, 12));
         }
     }
 
@@ -175,8 +194,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
      */
     @Override
     public float getWeight() {
-        capRotationClip.setCollectTransformDelegate(blendAction);
-        return 1.5f;
+        return 1;
     }
 
     /**
