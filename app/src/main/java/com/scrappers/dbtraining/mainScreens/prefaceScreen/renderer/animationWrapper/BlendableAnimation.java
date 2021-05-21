@@ -46,6 +46,8 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     private BlendAction blendAction;
     private BaseAction baseAction;
     private float count = 0;
+    private static final float minValueOfBlendSlider = 6;
+    private static final float maxValueOfBlendSlider = 12;
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -98,8 +100,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         capRotationClip.setLength(10f);
         capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
-        float minValueOfBlendSlider = 6;
-        float maxValueOfBlendSlider = 12;
+
         linearBlendSpace = new LinearBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
         linearBlendSpace.setValue(FastMath.interpolateLinear(0.5f, 6, 12));
         blendAction=new BlendAction(linearBlendSpace, capRotationClip, bottleTractionClip);
@@ -139,7 +140,7 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     public void update(float tpf) {
         count += tpf;
         if(count > blendAction.getLength()){
-            linearBlendSpace.setValue(FastMath.interpolateLinear(1, 6, 12));
+            linearBlendSpace.setValue(FastMath.interpolateLinear(1f, minValueOfBlendSlider, maxValueOfBlendSlider));
         }
     }
 

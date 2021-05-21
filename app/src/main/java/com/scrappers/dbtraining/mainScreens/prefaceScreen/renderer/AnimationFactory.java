@@ -5,14 +5,17 @@ import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -21,9 +24,11 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.TransformTrack;
+import com.jme3.anim.tween.action.Action;
 import com.jme3.app.Application;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.R;
@@ -38,10 +43,16 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.triggersUtils.TriggerID;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.triggersUtils.TriggerModel;
+import com.scrappers.dbtraining.notifications.NotificationUtils;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStateManager;
 import com.scrappers.superiorExtendedEngine.menuStates.UiStatesLooper;
 import com.scrappers.superiorExtendedEngine.menuStates.uiPager.UiPager;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import static android.view.View.GONE;
@@ -52,6 +63,7 @@ import static com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene.
 import static com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene.defaultStack;
 import static com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene.defaultThree;
 import static com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.Scene.defaultTwo;
+import static com.scrappers.dbtraining.notifications.BackgroundTask.NOTIFICATION_REQUEST;
 
 /**
  * @author pavl_g
@@ -66,6 +78,8 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
     private float timer=0.0f;
     private static final char SCROLLABLE_CONTENT = 'S' + 'C' + 'R' + 'O' + 'L' + 'L';
     private static boolean gridOn = false;
+    private EmitterTween emitterTween;
+
     public AnimationFactory(Spatial dataBaseStack, JmeSurfaceView jmeSurfaceView) {
         this.dataBaseStack=dataBaseStack;
         this.jmeSurfaceView=jmeSurfaceView;
@@ -109,26 +123,26 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         getStateManager().attach(new BasicArmature("BasicArmatureTrack", dataBaseStack));
         getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
         getStateManager().attach(new BasicTween("BasicTweenTrack", dataBaseStack));
-        EmitterTween emitterTween = new EmitterTween("EmitterTween", dataBaseStack);
+        emitterTween = new EmitterTween("EmitterTween", dataBaseStack);
         emitterTween.setAnimationEvents(new AnimEventEntity.AnimationEvents() {
             @Override
-            public void onAnimationStart(AnimComposer animComposer, TransformTrack transformationStart) {
+            public void onAnimationStart(AnimComposer animComposer, Action transformationStart) {
 
             }
 
             @Override
-            public void onAnimationEnd(AnimComposer animComposer, TransformTrack transformEnd) {
+            public void onAnimationEnd(AnimComposer animComposer, Action transformEnd) {
                 jmeSurfaceView.getLegacyApplication().enqueue(()->{
-//                    emitterTween.electricWaves1.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves2.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves3.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves4.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves5.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves6.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves7.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves8.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves9.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
-//                    emitterTween.electricWaves10.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.Blue));
+                    emitterTween.electricWaves1.getMaterial().setColor("GlowColor", ColorRGBA.randomColor());
+                    emitterTween.electricWaves2.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves3.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves4.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves5.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves6.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves7.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves8.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves9.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
+                    emitterTween.electricWaves10.getMaterial().setColor("GlowColor",ColorRGBA.randomColor());
                 });
             }
 
@@ -177,6 +191,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.animationSettings){
@@ -200,7 +215,16 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 }
             });
             Toast.makeText(jmeSurfaceView.getContext(),"Resettled the Scene !", LENGTH_LONG).show();
-
+            emitterTween.electricWaves1.getMaterial().setColor("GlowColor", ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves2.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves3.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves4.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves5.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves6.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves7.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves8.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves9.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
+            emitterTween.electricWaves10.getMaterial().setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
         }else if(v.getId() == R.id.gridSwitcher){
             if(gridOn){
                 gridOn = false;
@@ -217,8 +241,12 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             R.color.lightBlack),ContextCompat.getColor(v.getContext(),R.color.lightBlack)});
             invalidateUiPager(gridOn);
         }else if(v.getId() == R.id.dismissForever){
+
             ((ViewGroup)((ViewGroup)v.getParent()).getParent()).setVisibility(GONE);
             Toast.makeText(jmeSurfaceView.getContext(), "Powered By Jme Android", Toast.LENGTH_LONG).show();
+
+            NotificationUtils.initializeInBackground(jmeSurfaceView.getContext());
+
         }else if(v.getId() == TriggerID.closeTrigger){
 
             ((RelativeLayout)jmeSurfaceView.getParent()).findViewById(R.id.animationSettings).animate().setDuration(600).rotation(-45).start();
@@ -381,9 +409,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             }
             uiPager.attachUiState(relativeLayout, UiPager.SEQUENTIAL_ADD);
         }
-        uiPager.attachUiState(topUpMenu ,0);
         uiPager.invalidate();
-
     }
 
     /**

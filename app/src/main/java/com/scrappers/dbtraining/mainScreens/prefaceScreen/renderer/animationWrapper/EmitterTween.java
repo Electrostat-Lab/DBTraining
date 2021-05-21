@@ -154,7 +154,6 @@ public class EmitterTween extends AnimEventEntity {
         electricWavesTrack10.setTarget(electricWaves10);
         shockThunderTrack.setTarget(shockThunder);
 
-        setTransformTrack(electricWavesTrack1);
 
         //1st track
         electricWavesTrack1.setTimes(new float[]{2,4,8,16});
@@ -324,6 +323,8 @@ public class EmitterTween extends AnimEventEntity {
         //make a new Animation Layer that would hold a one current running action.....
         animComposer.makeLayer(LayerBuilder.LAYER_EMITTER_TWEEN, new ArmatureMask());
 
+        setAction(shockMyScreen);
+
     }
 
     @Override
@@ -346,6 +347,7 @@ public class EmitterTween extends AnimEventEntity {
             animComposer.setEnabled(true);
             //run shockMyScreen action
             animComposer.setCurrentAction("ShockMyScreen", LayerBuilder.LAYER_EMITTER_TWEEN);
+
         }
         if(shockThunder!=null &&
                 (shockThunder.getStatus()== AudioSource.Status.Paused || shockThunder.getStatus()== AudioSource.Status.Stopped)){
@@ -372,7 +374,7 @@ public class EmitterTween extends AnimEventEntity {
             electrics.setTexture("Texture", getApplication().getAssetManager().loadTexture("AssetsForRenderer/Textures/Fire.png"));
             electrics.setTexture("GlowMap", getApplication().getAssetManager().loadTexture("AssetsForRenderer/Textures/Fire.png"));
             electrics.selectTechnique("Glow",getApplication().getRenderManager());
-            electrics.setColor("GlowColor",ColorRGBA.Blue.mult(50f));
+            electrics.setColor("GlowColor",ColorRGBA.Cyan.mult(50f));
             electricWaves.setMaterial(electrics);
             electricWaves.getParticleInfluencer().setInitialVelocity(Vector3f.ZERO.negate().mult(5.5f));
             electricWaves.setImagesX(1);

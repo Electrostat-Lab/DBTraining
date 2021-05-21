@@ -45,8 +45,6 @@ public class SimpleScaleTrack extends AnimEventEntity {
 
         /*set the bone or the spatial*/
         transformTrack.setTarget(stackOne);
-        /*set the transformTrack to be used by the animationEvents*/
-        setTransformTrack(transformTrack);
 
         //the frame tracks are in-sequence or in parallel with each transform track , notice it must be in a pattern form , in which the proceeding value
         //is delayed by (n) * the preceding value , n is scaleFactor of delayFactor , is determinant by the coder , here its simply 2.
@@ -106,6 +104,9 @@ public class SimpleScaleTrack extends AnimEventEntity {
          */
         animComposer.addAction(clip.getName(), new ClipAction(clip));
         animComposer.makeLayer(LayerBuilder.LAYER_SIMPLE_TRACK, new ArmatureMask());
+        /*set the transformTrack to be used by the animationEvents*/
+        setAction(animComposer.getAction(clip.getName()));
+
     }
 
     @Override
