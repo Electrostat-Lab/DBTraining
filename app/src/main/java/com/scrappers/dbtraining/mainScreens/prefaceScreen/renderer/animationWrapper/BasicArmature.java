@@ -62,11 +62,12 @@ public class BasicArmature extends BaseAppState {
 
         stackOneTrack.setTarget(stackOne);
         stackOneTrack.setTimes(new float[]{8,16,32,64});
+        Vector3f stackTwoTranslations = stackOne.getLocalTranslation();
         stackOneTrack.setKeyframesTranslation(new Vector3f[]{
-                stackOne.getLocalTranslation(),
-                stackOne.getLocalTranslation().subtract(new Vector3f(stackOne.getLocalScale().x+1f,0,0)),
-                stackOne.getLocalTranslation().subtract(new Vector3f(0,stackOne.getLocalScale().y+0.2f,0)),
-                stackOne.getLocalTranslation().add(new Vector3f(stackOne.getLocalScale().x,0,0)),
+                stackTwoTranslations,
+                stackTwoTranslations.subtract(new Vector3f(stackOne.getLocalScale().x+1f,0,0)),
+                stackTwoTranslations.subtract(new Vector3f(0,stackOne.getLocalScale().y+0.2f,0)),
+                stackTwoTranslations.add(new Vector3f(stackOne.getLocalScale().x,0,0)),
         });
 
         stackTwoTrack.setTarget(stackTwo);

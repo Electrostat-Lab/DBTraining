@@ -17,22 +17,15 @@ public class HolderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_holder);
-
         Navigation navigation=new Navigation(HolderActivity.this);
         navigation.start();
         //display the default fragment screen
-        displayWindow(new PrefaceScreen());
+        navigation.displayWindow(new PrefaceScreen());
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         SystemVisibilityUI systemVisibilityUI=new SystemVisibilityUI(HolderActivity.this);
         systemVisibilityUI.setGameMode();
-    }
-
-    private void displayWindow(@NonNull Fragment fragment){
-        FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content,fragment);
-        fragmentTransaction.commit();
     }
 }

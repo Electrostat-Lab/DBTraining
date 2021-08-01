@@ -22,7 +22,7 @@ import androidx.work.impl.utils.futures.SettableFuture;
 
 public class BackgroundTask extends ListenableWorker {
     public static final String ACTION_TEST_JME = "ActionTestJme";
-    public static final String ACTION_DISMISS = "ActionTestJme";
+    public static final String ACTION_DISMISS = "ActionDismiss";
     public static final int NOTIFICATION_REQUEST = 209;
     private final WorkerParameters workerParameters;
     private final List<Result> results = new ArrayList<>();
@@ -42,7 +42,7 @@ public class BackgroundTask extends ListenableWorker {
        final SettableFuture<Result> finalResult = SettableFuture.create();
        synchronized(this) {
            try {
-               return Executors.callable(() -> {
+               return Executors.newSingleThreadExecutor().submit(() -> {
                    Notification builder = NotificationUtils.initializeNow(getApplicationContext())
                         // .setLargeIcon(Bitmap.createBitmap())
                            .setSmallIcon(R.mipmap.db_server_layer)
@@ -76,7 +76,7 @@ public class BackgroundTask extends ListenableWorker {
                    } else {
                        finalResult.set(Result.retry());
                    }
-               }, finalResult).call();
+               }, finalResult).get();
            } catch (Exception e) {
                e.printStackTrace();
                finalResult.set(Result.failure());

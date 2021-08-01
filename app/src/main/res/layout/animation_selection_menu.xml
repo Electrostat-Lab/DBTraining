@@ -1,9 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="1000px"
     android:layout_gravity="bottom"
-    android:id="@+id/triggersMenu"
+    android:id="@+id/holderMenu"
     android:paddingTop="8dp"
     android:background="@drawable/toolbar_background">
-</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/moreOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="50"
+        >
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        app:queryHint="Search Option"
+        app:queryBackground="@drawable/query_background"
+        app:defaultQueryHint="Search Options"
+        app:searchIcon="@drawable/ic_baseline_search_24"
+        android:layout_margin="3dp"
+        android:layout_weight="40"
+        />
+        <ImageView
+            android:id="@+id/sort"
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_baseline_sort_by_alpha_24"
+            android:padding="10dp"
+            android:layout_weight="10"
+            />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/triggersMenu"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/toolbar_background"
+        />
+</LinearLayout>

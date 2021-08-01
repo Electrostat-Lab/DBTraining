@@ -368,7 +368,7 @@ public class EmitterTween extends AnimEventEntity {
     }
     private ParticleEmitter loadElectricWaves(int id){
             ParticleEmitter electricWaves = new ParticleEmitter("ElectricShocks "+id, ParticleMesh.Type.Triangle, 500);
-            electricWaves.setParticlesPerSec(FastMath.pow(5,3));
+            electricWaves.setParticlesPerSec(FastMath.pow(5,5));
             Material electrics = new Material(getApplication().getAssetManager(), "Common/MatDefs/Misc/Particle.j3md");
             electrics.setBoolean("PointSprite",true);
             electrics.setTexture("Texture", getApplication().getAssetManager().loadTexture("AssetsForRenderer/Textures/Fire.png"));
@@ -381,8 +381,8 @@ public class EmitterTween extends AnimEventEntity {
             electricWaves.setImagesY(1);
             electricWaves.setStartColor(ColorRGBA.White.mult(ColorRGBA.Blue));
             electricWaves.setEndColor(ColorRGBA.Blue);
-            electricWaves.setStartSize(0.05f);
-            electricWaves.setEndSize(0.025f);
+            electricWaves.setStartSize(0.025f);
+            electricWaves.setEndSize(0.015f);
             electricWaves.setGravity(electricWaves.getParticleInfluencer().getInitialVelocity().mult(20f));
             electricWaves.setLowLife(0.2f);
             electricWaves.setHighLife(1f);

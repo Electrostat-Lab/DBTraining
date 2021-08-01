@@ -22,9 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".notifications.OnActionsListener"
-            />
+        <service android:name=".notifications.OnActionsListener" />
+        <receiver android:name=".mainScreens.prefaceScreen.renderer.OrderReceiver"/>
+        <receiver android:name=".appWidgets.ShortHandApp">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/shorthand"
+                android:value="ShortHand Widget for DB-BootCamp"/>
+        </receiver>
     </application>
 
 

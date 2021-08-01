@@ -13,16 +13,18 @@ public class TriggerModel {
         return btnText;
     }
 
-    public void setBtnText(String btnText) {
-        this.btnText = btnText;
+    public TriggerModel setBtnText(String btnText) {
+            this.btnText = btnText;
+        return this;
     }
 
     public char getBtnID() {
         return btnID;
     }
 
-    public void setBtnID(char btnID) {
-        this.btnID = btnID;
+    public TriggerModel setBtnID(char btnID) {
+            this.btnID = btnID;
+        return this;
     }
 
 }

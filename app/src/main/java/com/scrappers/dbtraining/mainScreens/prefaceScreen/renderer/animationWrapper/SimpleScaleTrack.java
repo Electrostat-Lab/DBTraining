@@ -48,7 +48,7 @@ public class SimpleScaleTrack extends AnimEventEntity {
 
         //the frame tracks are in-sequence or in parallel with each transform track , notice it must be in a pattern form , in which the proceeding value
         //is delayed by (n) * the preceding value , n is scaleFactor of delayFactor , is determinant by the coder , here its simply 2.
-        transformTrack.setTimes(new float[]{5,10,15,20,25,30,35,40,45,50,55});
+        transformTrack.setTimes(new float[]{5,10,15,20,25,30,35,40,45});
         //Zoom in - Zoom out Scales keyFrames
         transformTrack.setKeyframesScale(new Vector3f[]{
                 new Vector3f(stackOne.getLocalScale().clone().divide(1.2f)),
@@ -63,8 +63,6 @@ public class SimpleScaleTrack extends AnimEventEntity {
         });
 
         transformTrack.setKeyframesTranslation(new Vector3f[]{
-                stackOne.getLocalTranslation(),
-                stackOne.getLocalTranslation(),
                 stackOne.getLocalTranslation(),
                 stackOne.getLocalTranslation(),
                 stackOne.getLocalTranslation(),
@@ -91,8 +89,6 @@ public class SimpleScaleTrack extends AnimEventEntity {
                 stackOne.getLocalRotation().fromAngleAxis(2*FastMath.PI/5,Vector3f.UNIT_Y),
                 stackOne.getLocalRotation().fromAngleAxis(2*FastMath.PI/5,Vector3f.UNIT_Y),
                 //now reverse theta=-360 on 5 keyFrames , so each keyFrameAngle=-2*pi/5
-                stackOne.getLocalRotation().fromAngleAxis(-2*FastMath.PI/5,Vector3f.UNIT_Y),
-                stackOne.getLocalRotation().fromAngleAxis(-2*FastMath.PI/5,Vector3f.UNIT_Y),
                 stackOne.getLocalRotation().fromAngleAxis(-2*FastMath.PI/5,Vector3f.UNIT_Y),
                 stackOne.getLocalRotation().fromAngleAxis(-2*FastMath.PI/5,Vector3f.UNIT_Y),
                 stackOne.getLocalRotation().fromAngleAxis(-2*FastMath.PI/5,Vector3f.UNIT_Y),

@@ -57,7 +57,7 @@ public class Navigation {
             return true;
         });
     }
-    private void displayWindow(@NonNull Fragment fragment){
+    public void displayWindow(@NonNull Fragment fragment){
         FragmentTransaction fragmentTransaction= context.getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content,fragment);
         fragmentTransaction.commit();
