@@ -23,8 +23,8 @@ android {
         exclude group:"org.jmonkeyengine",module:"jme3-desktop"
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -38,7 +38,7 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-core:3.4.0-beta4"
     implementation "org.jmonkeyengine:jme3-effects:3.4.0-beta4"
     implementation "org.jmonkeyengine:jme3-android-native:3.4.0-beta4"
-    implementation 'com.github.Scrappers-glitch:Superior-Extended-Engine:1.5.1-alpha2'
+    implementation 'com.github.Scrappers-glitch:Superior-Extended-Engine:1.5.1-alpha12'
     implementation "androidx.work:work-runtime:2.5.0"
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
 
