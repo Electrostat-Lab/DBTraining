@@ -26,6 +26,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.customBlendAction.CustomBlendAction;
 
 /**
  * <b>A class demonstrating the usage of BlendableActions #{@link BlendableAction} & BlendActions #{@link BlendAction}</b>
@@ -37,17 +38,17 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
  * </ul>
  * @author pavl_g
  */
-public class BlendableAnimation extends BaseAppState implements BlendSpace {
+public class BlendableAnimation extends BaseAppState {
     private final Spatial dataBaseStack;
     //create a global AnimComposer Control instance
     private AnimComposer animComposer;
-    private LinearBlendSpace linearBlendSpace;
-    private ClipAction capRotationClip;
+    private BlendSpace radialBlendSpace;
     private BlendAction blendAction;
-    private BaseAction baseAction;
     private float count = 0;
-    private static final float minValueOfBlendSlider = 6;
-    private static final float maxValueOfBlendSlider = 12;
+    private static final float minValueOfBlendSlider = 3;
+    private static final float maxValueOfBlendSlider = 6;
+    private boolean shuffleFlag = false;
+
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -93,18 +94,18 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
         animComposer.addAnimClip(capRotationAnimClip);
         animComposer.addAnimClip(bottleTractionAnimClip);
         //8)Create ClipAction instances for the AnimClips (BlendableActions)
-        capRotationClip=new ClipAction(capRotationAnimClip);
-        ClipAction bottleTractionClip=new ClipAction(bottleTractionAnimClip);
+        final ClipAction capRotationClip = new ClipAction(capRotationAnimClip);
+        final ClipAction bottleTractionClip=new ClipAction(bottleTractionAnimClip);
         bottleTractionClip.setTransitionLength(10f);
         bottleTractionClip.setLength(10f);
         capRotationClip.setLength(10f);
         capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
 
-        linearBlendSpace = new LinearBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
-        linearBlendSpace.setValue(FastMath.interpolateLinear(0.5f, 6, 12));
-        blendAction=new BlendAction(linearBlendSpace, capRotationClip, bottleTractionClip);
-        baseAction=new BaseAction(Tweens.sequence(capRotationClip, blendAction));
+        radialBlendSpace = new CustomBlendAction.RadialBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
+
+        blendAction = new CustomBlendAction(radialBlendSpace, capRotationClip, bottleTractionClip);
+        final BaseAction baseAction = new BaseAction(blendAction);
         baseAction.setLength(10f);
         baseAction.setSpeed(2f);
         //10)add that BlendAction to the AnimComposer using addAction(...)
@@ -125,7 +126,6 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
             animComposer.setEnabled(true);
             //11)run this BlendAction in the default layer
             animComposer.setCurrentAction("SimulateBottleFall", LayerBuilder.LAYER_BLENDABLE_ANIM);
-
         }
     }
 
@@ -140,69 +140,26 @@ public class BlendableAnimation extends BaseAppState implements BlendSpace {
     public void update(float tpf) {
         count += tpf;
         if(count > blendAction.getLength()){
-            linearBlendSpace.setValue(FastMath.interpolateLinear(1f, minValueOfBlendSlider, maxValueOfBlendSlider));
+            if(!shuffleFlag) {
+                radialBlendSpace.setValue(FastMath.extrapolateLinear(80f * count, minValueOfBlendSlider, maxValueOfBlendSlider));
+                ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
+                setShuffleFlag(true);
+            }else{
+                radialBlendSpace.setValue(FastMath.interpolateLinear(0.8f, minValueOfBlendSlider, maxValueOfBlendSlider));
+                setShuffleFlag(false);
+            }
+            //reset counter
+            count = 0;
+            //shuffle actions for the regular run.
+            ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
         }
     }
 
-    /**
-     * additional method for additional settings to set during the instantiation of #{@link BlendAction} instance
-     * this method gets called inside the Constructor of #{@link BlendAction#BlendAction(BlendSpace, BlendableAction...)} when the BlendAction instance gets instantiated\.
-     * @param action your blendAction instance.
-     */
-    @Override
-    public void setBlendAction(BlendAction action) {
-        /*sets the length of transitions between keyFrames-delay time between keyFrames*/
-        action.setSpeed(5f);
+    public boolean isShuffleFlag() {
+        return shuffleFlag;
     }
 
-    /**
-     * Returns the value of the weight of the transformations interpolation(ie delta or scaleFactor).
-     * #{@link BlendableAction#interpolate(double)} , #{@link BlendableAction#getWeight()} ,#{BlendAction#blendWeight}.
-     * #{@link BlendAction#collectTransform(HasLocalTransform, Transform, float, BlendableAction)} :
-     * basically collects the transforms of that model & outputs the result of interpolation between them using the scaleDeltaFactor TransitionWeight or blendWeight.
-     * @return the value of the weight of the transformations interpolation(ie delta or scaleFactor)
-     * @apiNote Notice :
-     * <ol>
-     * <li>
-     * If you set the delta(weight) of the interpolation to 1 :
-     * that means the next Transform would be equal to the next keyFrame that you have specified using #{@link TransformTrack#setKeyframes(float[], Vector3f[], Quaternion[], Vector3f[])}
-     * </li>
-     * <li>
-     * If you set the delta(weight) of the interpolation to values less than 1 :
-     * that means the next Transform would be less than the next keyFrame that you have specified using #{@link TransformTrack#setKeyframes(float[], Vector3f[], Quaternion[], Vector3f[])}
-     * by (1-getWeight()) value , due to the linear interpolation.
-     * </li>
-     * <li>
-     * If you set the delta(weight) of the interpolation to values higher than 1:
-     * that means the next Transform (of the 2nd active Action only) would be more greater than your local next keyFrame by (getWeight()*getLength()) times ,
-     * because #{@link Transform#interpolateTransforms(Transform, Transform, float)} isn't protected against values bigger than 1 , so values bigger than 1 would extrapolate it
-     * that means even if you didn't setScaleKeyFrames() , the BlendAction would interpolate between the tr1.getScales() & tr2.getScales() by a delta of 2 ,
-     * that would lead to scaling the object by 2 times it's initial value.
-     * </li>
-     * <li>
-     * If you set the delta(weight) of the interpolation to values Zero:
-     * that means the next Transform would be equal to the previous while iterating over your TransformTrack keyFrames(would lead to a very smooth motion)  ,
-     *  #{@link Transform#interpolateTransforms(Transform, Transform, float)}.
-     * </li>
-     * </ol>
-     *
-     * <b>NOTICE2(WIP) : i have also noticed that the 2nd , 3rd , 4th , .... blendable actions for the single blendAction run only if the getWeight() is > 1 , in the 2nd loop
-     * of the keyFrames
-     * --->because this #{@link BlendAction#setCollectTransformDelegate(BlendableAction)} gets settled to null after the first run of the #{@link BlendAction#doInterpolate(double)} &
-     * the secondary blendActions are dependant upon #{@link BlendAction#collect(HasLocalTransform, Transform)} to provide their interpolation which basically
-     * interpolates only if(getWeight() > 1) or less than 1.
-     *</b>
-     */
-    @Override
-    public float getWeight() {
-        return 1;
+    public void setShuffleFlag(boolean shuffleFlag) {
+        this.shuffleFlag = shuffleFlag;
     }
-
-    /**
-     * this doesn't actually get called or used by anything in the universe
-     * @param value DON'T USE
-     */
-    @Deprecated
-    @Override
-    public void setValue(float value) {}
 }
