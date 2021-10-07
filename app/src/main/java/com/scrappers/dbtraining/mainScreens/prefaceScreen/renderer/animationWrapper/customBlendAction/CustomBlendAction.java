@@ -11,6 +11,7 @@ import com.jme3.math.FastMath;
  * @author pavl_g.
  */
 public final class CustomBlendAction extends BlendAction {
+
     public CustomBlendAction(BlendSpace blendSpace, BlendableAction... actions) {
         super(blendSpace, actions);
     }
@@ -44,7 +45,7 @@ public final class CustomBlendAction extends BlendAction {
         private float maxCircumference;
         private float step;
         private boolean shuffleFlag = false;
-        int firstActiveAction = 0;
+        private int firstActiveAction = 0;
 
         public RadialBlendSpace(final float minRadius, final float maxRadius){
             this.minRadius = minRadius;
@@ -75,6 +76,8 @@ public final class CustomBlendAction extends BlendAction {
          */
         @Override
         public float getWeight() {
+            //update values
+            setBlendAction(blendAction);
             final int numberOfActiveActions = blendAction.getActions().length;
             float lowStep = minCircumference, highStep = minCircumference;
 
@@ -110,24 +113,18 @@ public final class CustomBlendAction extends BlendAction {
             this.maxRadius = maxRadius;
             //re-calculate the maxWave
             maxCircumference = 2 * FastMath.PI * maxRadius;
-            //recalculate values
-            setBlendAction(blendAction);
         }
 
         public void setMaxRadius(float maxRadius) {
             this.maxRadius = maxRadius;
             //re-calculate the maxWave
             maxCircumference = 2 * FastMath.PI * maxRadius;
-            //recalculate values
-            setBlendAction(blendAction);
         }
 
         public void setMinRadius(float minRadius) {
             this.minRadius = minRadius;
             //recalculate values
             minCircumference = 2 * FastMath.PI * minRadius;
-            //recalculate values
-            setBlendAction(blendAction);
         }
 
         public void shuffleActionIndices(){
@@ -151,5 +148,176 @@ public final class CustomBlendAction extends BlendAction {
         }
     }
     //...........Other useful blendSpaces...........
+    public static class CubicInscribedTriSpace implements BlendSpace{
 
+        private CustomBlendAction action;
+        private float baseI;
+        private float heightI;
+        private float baseII;
+        private float heightII;
+        private float stepOfBlending;
+        private float areaI;
+        private float areaII;
+        private enum Base10Constraint{
+            ;
+            public static float limitTo10(final float value){
+                return value % 11;
+            }
+        }
+        public CubicInscribedTriSpace(final float baseI, final float heightI, final float baseII, final float heightII){
+            this.baseI = Base10Constraint.limitTo10(baseI);
+            this.heightI = Base10Constraint.limitTo10(heightI);
+            this.baseII = Base10Constraint.limitTo10(baseII);
+            this.heightII = Base10Constraint.limitTo10(heightII);
+        }
+        @Override
+        public void setBlendAction(BlendAction action) {
+            if(action instanceof CustomBlendAction){
+                this.action = (CustomBlendAction) action;
+                final CustomBlendAction customBlendAction = ((CustomBlendAction) action);
+                final int numberOfSpacesBetweenActions = customBlendAction.getActions().length - 1;
+
+                areaI = 0.5f * baseI * heightI;
+                areaII = 0.5f * baseII * heightII;
+                stepOfBlending = (areaII - areaI) / numberOfSpacesBetweenActions;
+            }else{
+                throw new IllegalStateException("BlendAction Should be of type " + CustomBlendAction.class.getName());
+            }
+        }
+
+        @Override
+        public float getWeight() {
+            //update-values
+            setBlendAction(action);
+            int currentStep = 0;
+            int indexI = 0;
+            for(int i = 0; i < action.getActions().length - 1 && currentStep < areaII; i++, currentStep+=stepOfBlending){
+                indexI = i;
+                //log the products
+                System.out.println(currentStep + " " + stepOfBlending);
+            }
+            action.setFirstActiveIndex(indexI);
+            action.setSecondActiveIndex(indexI + 1);
+            final float scaleFactor = FastMath.pow((areaI / areaII), 3);
+            final float inscribedTri = areaII - areaI;
+            // -- NB: this scale weight gets applied to the secondActiveIndex within the blendAction & if the weight is less than 1, then the firstActiveIndex would run.
+            //scale the inscribed area into tiny inscribed triangular areas triple times smaller than its initial value.
+            return inscribedTri * scaleFactor;
+        }
+
+        @Override
+        public void setValue(float value) {
+
+        }
+
+        public void setBaseI(float baseI) {
+            this.baseI = baseI;
+        }
+
+        public void setBaseII(float baseII) {
+            this.baseII = baseII;
+        }
+
+        public void setHeightI(float heightI) {
+            this.heightI = heightI;
+        }
+
+        public void setHeightII(float heightII) {
+            this.heightII = heightII;
+        }
+    }
+    public static class PieChartSpace implements BlendSpace{
+        private CustomBlendAction action;
+        private float radius;
+        private float angle;
+        private float area;
+        private float part;
+        private float lastStep = 0.0f;
+        private int lastActionIndex;
+        private boolean incremental = true;
+        private float count = 0f;
+        private float resetTimer = 0f;
+        private enum ValueConstraint {;
+            public static float constrainAngleTo360(final float angle){
+                return angle % 361;
+            }
+            public static float constraintRadiusToUnitCircle(final float radius){
+                return radius % 1.1f;
+            }
+        }
+        public PieChartSpace(final float radius, final float angle){
+            this.radius = ValueConstraint.constraintRadiusToUnitCircle(radius);
+            this.angle = ValueConstraint.constrainAngleTo360(angle);
+        }
+        @Override
+        public void setBlendAction(BlendAction action) {
+            if(action instanceof CustomBlendAction){
+                this.action = (CustomBlendAction) action;
+                this.action.setFirstActiveIndex(this.action.getActions().length - 2);
+                this.action.setSecondActiveIndex(this.action.getActions().length - 1);
+                area = FastMath.PI * FastMath.pow(radius, 2);
+                part = (angle / 360) * area;
+            }else {
+                throw new IllegalStateException("BlendAction Should be of type " + CustomBlendAction.class.getName());
+            }
+        }
+
+        @Override
+        public float getWeight() {
+            count += 0.00005f;
+            //keep the values updated with the loop (coherent update).
+            setBlendAction(action);
+            final float areaOfUnitCircle = FastMath.PI;
+            //the scaleFactor is the factor of ratio between the user's area & the unit circle area
+            final float scaleFactor = area / areaOfUnitCircle;
+            //get the currentStep that involves a chosen scaled pieChart chunk by a kind of scaleFactor
+            final float currentStep = part * scaleFactor;
+            if(lastStep < area && lastActionIndex < action.getActions().length - 1) {
+                if(isIncremental()) {
+                    lastStep += currentStep;
+                }else {
+                    lastStep = currentStep;
+                }
+                action.setFirstActiveIndex(lastActionIndex++);
+                action.setSecondActiveIndex(lastActionIndex);
+            }else{
+                lastActionIndex = 0;
+            }
+            if(count > resetTimer){
+                lastStep = currentStep;
+                lastActionIndex = 0;
+            }
+
+            return lastStep;
+        }
+
+        @Override
+        public void setValue(float inscribedPart) {
+            this.part = inscribedPart;
+        }
+
+        public void setAngle(float angle) {
+            this.angle = ValueConstraint.constrainAngleTo360(angle);
+        }
+
+        public void setRadius(float radius) {
+            this.radius = ValueConstraint.constraintRadiusToUnitCircle(radius);
+        }
+
+        public void setArea(float area) {
+            this.area = area;
+        }
+
+        public void setIncremental(boolean incremental) {
+            this.incremental = incremental;
+        }
+
+        public boolean isIncremental() {
+            return incremental;
+        }
+
+        public void setResetTimer(float resetTimer) {
+            this.resetTimer = resetTimer;
+        }
+    }
 }

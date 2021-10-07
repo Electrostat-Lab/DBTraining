@@ -5,24 +5,16 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.TransformTrack;
-import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
 import com.jme3.anim.tween.action.BlendAction;
 import com.jme3.anim.tween.action.BlendSpace;
 import com.jme3.anim.tween.action.BlendableAction;
 import com.jme3.anim.tween.action.ClipAction;
-import com.jme3.anim.tween.action.LinearBlendSpace;
-import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.cinematic.Cinematic;
-import com.jme3.cinematic.events.AnimEvent;
-import com.jme3.cinematic.events.AnimationEvent;
-import com.jme3.cinematic.events.CinematicEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
@@ -102,7 +94,8 @@ public class BlendableAnimation extends BaseAppState {
         capRotationClip.setTransitionLength(10f);
         //9)feed the BlendableActions to a single BlendAction
 
-        radialBlendSpace = new CustomBlendAction.RadialBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
+//        radialBlendSpace = new CustomBlendAction.RadialBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
+        radialBlendSpace = new CustomBlendAction.PieChartSpace(0.5f, 260);
 
         blendAction = new CustomBlendAction(radialBlendSpace, capRotationClip, bottleTractionClip);
         final BaseAction baseAction = new BaseAction(blendAction);
@@ -141,17 +134,19 @@ public class BlendableAnimation extends BaseAppState {
         count += tpf;
         if(count > blendAction.getLength()){
             if(!shuffleFlag) {
-                radialBlendSpace.setValue(FastMath.extrapolateLinear(80f * count, minValueOfBlendSlider, maxValueOfBlendSlider));
-                ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
+                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setRadius(0.887f);
+                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setAngle(369);
+
                 setShuffleFlag(true);
             }else{
-                radialBlendSpace.setValue(FastMath.interpolateLinear(0.8f, minValueOfBlendSlider, maxValueOfBlendSlider));
+                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setRadius(0.887f);
+                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setAngle(90);
                 setShuffleFlag(false);
             }
             //reset counter
             count = 0;
             //shuffle actions for the regular run.
-            ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
+//            ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
         }
     }
 
