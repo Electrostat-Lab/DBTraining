@@ -141,7 +141,7 @@ public class BlendableAnimation extends BaseAppState {
             }else{
                 ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(RADIUS);
                 //use quarter of circle area(the fraction value).
-                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(270);
+                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(360);
                 setShuffleFlag(false);
             }
             //reset counter

@@ -274,7 +274,8 @@ public final class CustomBlendAction extends BlendAction {
             }else{
                 lastActionIndex = 0;
             }
-            return currentStep;
+            //limit values to 1 aka 100%
+            return Math.min(currentStep, 1f);
         }
 
         @Override
