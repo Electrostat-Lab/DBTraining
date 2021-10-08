@@ -13,7 +13,6 @@ import com.jme3.anim.tween.action.BlendableAction;
 import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
@@ -34,11 +33,12 @@ public class BlendableAnimation extends BaseAppState {
     private final Spatial dataBaseStack;
     //create a global AnimComposer Control instance
     private AnimComposer animComposer;
-    private BlendSpace radialBlendSpace;
+    private BlendSpace blendSpace;
     private BlendAction blendAction;
     private float count = 0;
     private static final float minValueOfBlendSlider = 3;
     private static final float maxValueOfBlendSlider = 6;
+    private static final float RADIUS = 0.887f;
     private boolean shuffleFlag = false;
 
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
@@ -95,9 +95,9 @@ public class BlendableAnimation extends BaseAppState {
         //9)feed the BlendableActions to a single BlendAction
 
 //        radialBlendSpace = new CustomBlendAction.RadialBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
-        radialBlendSpace = new CustomBlendAction.PieChartSpace(0.5f, 260);
+        blendSpace = new CustomBlendAction.PieChartSpace(RADIUS, 45);
+        blendAction = new CustomBlendAction(blendSpace, capRotationClip, bottleTractionClip);
 
-        blendAction = new CustomBlendAction(radialBlendSpace, capRotationClip, bottleTractionClip);
         final BaseAction baseAction = new BaseAction(blendAction);
         baseAction.setLength(10f);
         baseAction.setSpeed(2f);
@@ -134,13 +134,14 @@ public class BlendableAnimation extends BaseAppState {
         count += tpf;
         if(count > blendAction.getLength()){
             if(!shuffleFlag) {
-                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setRadius(0.887f);
-                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setAngle(369);
-
+                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(RADIUS);
+                //use full angle fraction(full area).
+                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(90);
                 setShuffleFlag(true);
             }else{
-                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setRadius(0.887f);
-                ((CustomBlendAction.PieChartSpace)radialBlendSpace).setAngle(90);
+                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(RADIUS);
+                //use quarter of circle area(the fraction value).
+                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(270);
                 setShuffleFlag(false);
             }
             //reset counter

@@ -232,14 +232,10 @@ public final class CustomBlendAction extends BlendAction {
         private float angle;
         private float area;
         private float part;
-        private float lastStep = 0.0f;
         private int lastActionIndex;
-        private boolean incremental = true;
-        private float count = 0f;
-        private float resetTimer = 0f;
         private enum ValueConstraint {;
             public static float constrainAngleTo360(final float angle){
-                return angle % 361;
+                return angle % 361f;
             }
             public static float constraintRadiusToUnitCircle(final float radius){
                 return radius % 1.1f;
@@ -255,8 +251,8 @@ public final class CustomBlendAction extends BlendAction {
                 this.action = (CustomBlendAction) action;
                 this.action.setFirstActiveIndex(this.action.getActions().length - 2);
                 this.action.setSecondActiveIndex(this.action.getActions().length - 1);
-                area = FastMath.PI * FastMath.pow(radius, 2);
-                part = (angle / 360) * area;
+                area = FastMath.PI * FastMath.pow(radius, 2f);
+                part = (angle / 360f) * area;
             }else {
                 throw new IllegalStateException("BlendAction Should be of type " + CustomBlendAction.class.getName());
             }
@@ -264,31 +260,21 @@ public final class CustomBlendAction extends BlendAction {
 
         @Override
         public float getWeight() {
-            count += 0.00005f;
             //keep the values updated with the loop (coherent update).
             setBlendAction(action);
             final float areaOfUnitCircle = FastMath.PI;
             //the scaleFactor is the factor of ratio between the user's area & the unit circle area
             final float scaleFactor = area / areaOfUnitCircle;
-            //get the currentStep that involves a chosen scaled pieChart chunk by a kind of scaleFactor
-            final float currentStep = part * scaleFactor;
-            if(lastStep < area && lastActionIndex < action.getActions().length - 1) {
-                if(isIncremental()) {
-                    lastStep += currentStep;
-                }else {
-                    lastStep = currentStep;
-                }
+            //get the currentStep that involves a chosen scaled pieChart chunk by a kind of scaleFactor.
+            //the scaleFactor aims at scaling the pieChart chunk again with respect to the unitCircleArea.
+            float currentStep = part * scaleFactor;
+            if(lastActionIndex < action.getActions().length - 1) {
                 action.setFirstActiveIndex(lastActionIndex++);
                 action.setSecondActiveIndex(lastActionIndex);
             }else{
                 lastActionIndex = 0;
             }
-            if(count > resetTimer){
-                lastStep = currentStep;
-                lastActionIndex = 0;
-            }
-
-            return lastStep;
+            return currentStep;
         }
 
         @Override
@@ -306,18 +292,6 @@ public final class CustomBlendAction extends BlendAction {
 
         public void setArea(float area) {
             this.area = area;
-        }
-
-        public void setIncremental(boolean incremental) {
-            this.incremental = incremental;
-        }
-
-        public boolean isIncremental() {
-            return incremental;
-        }
-
-        public void setResetTimer(float resetTimer) {
-            this.resetTimer = resetTimer;
         }
     }
 }
