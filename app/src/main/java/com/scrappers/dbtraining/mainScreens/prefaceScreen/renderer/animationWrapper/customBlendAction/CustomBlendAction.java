@@ -155,31 +155,41 @@ public final class CustomBlendAction extends BlendAction {
         private float heightI;
         private float baseII;
         private float heightII;
-        private float stepOfBlending;
         private float areaI;
         private float areaII;
-        private enum Base10Constraint{
-            ;
-            public static float limitTo10(final float value){
-                return value % 11;
-            }
+        private float blendingStep = 0f;
+        private float currentStep = 0f;
+        private int indexI = 0;
+        private float inscribedTri;
+        private boolean incremental = false;
+        /**
+         * Use default impl.
+         */
+        public CubicInscribedTriSpace(){
+            this(2f, 4f, 8f, 8f);
         }
         public CubicInscribedTriSpace(final float baseI, final float heightI, final float baseII, final float heightII){
-            this.baseI = Base10Constraint.limitTo10(baseI);
-            this.heightI = Base10Constraint.limitTo10(heightI);
-            this.baseII = Base10Constraint.limitTo10(baseII);
-            this.heightII = Base10Constraint.limitTo10(heightII);
+            this.baseI = baseI;
+            this.heightI = heightI;
+            this.baseII = baseII;
+            this.heightII = heightII;
         }
         @Override
         public void setBlendAction(BlendAction action) {
             if(action instanceof CustomBlendAction){
                 this.action = (CustomBlendAction) action;
-                final CustomBlendAction customBlendAction = ((CustomBlendAction) action);
-                final int numberOfSpacesBetweenActions = customBlendAction.getActions().length - 1;
-
                 areaI = 0.5f * baseI * heightI;
                 areaII = 0.5f * baseII * heightII;
-                stepOfBlending = (areaII - areaI) / numberOfSpacesBetweenActions;
+                //shuffle areas if areaI > areaII.
+                if(areaI > areaII){
+                    final float tempI = areaI;
+                    final float tempII = areaII;
+                    areaII = tempI;
+                    areaI = tempII;
+                }
+                inscribedTri = areaII - areaI;
+                final int numberOfBlendingSpaces = ((CustomBlendAction) action).getActions().length - 1;
+                blendingStep = inscribedTri / numberOfBlendingSpaces;
             }else{
                 throw new IllegalStateException("BlendAction Should be of type " + CustomBlendAction.class.getName());
             }
@@ -189,25 +199,34 @@ public final class CustomBlendAction extends BlendAction {
         public float getWeight() {
             //update-values
             setBlendAction(action);
-            int currentStep = 0;
-            int indexI = 0;
-            for(int i = 0; i < action.getActions().length - 1 && currentStep < areaII; i++, currentStep+=stepOfBlending){
-                indexI = i;
-                //log the products
-                System.out.println(currentStep + " " + stepOfBlending);
+            if(currentStep < inscribedTri && indexI < action.getActions().length - 1){
+                if(isIncremental()) {
+                    currentStep += blendingStep;
+                }else{
+                    currentStep = blendingStep;
+                }
+                action.setFirstActiveIndex(indexI++);
+                action.setSecondActiveIndex(indexI);
+            }else{
+                indexI = 0;
             }
-            action.setFirstActiveIndex(indexI);
-            action.setSecondActiveIndex(indexI + 1);
             final float scaleFactor = FastMath.pow((areaI / areaII), 3);
-            final float inscribedTri = areaII - areaI;
             // -- NB: this scale weight gets applied to the secondActiveIndex within the blendAction & if the weight is less than 1, then the firstActiveIndex would run.
             //scale the inscribed area into tiny inscribed triangular areas triple times smaller than its initial value.
-            return inscribedTri * scaleFactor;
+            return currentStep * scaleFactor;
         }
 
         @Override
-        public void setValue(float value) {
+        public void setValue(float inscribedTri) {
+            this.inscribedTri = inscribedTri;
+        }
 
+        public void setIncremental(boolean incremental) {
+            this.incremental = incremental;
+        }
+
+        public boolean isIncremental() {
+            return incremental;
         }
 
         public void setBaseI(float baseI) {
@@ -240,6 +259,14 @@ public final class CustomBlendAction extends BlendAction {
             public static float constraintRadiusToUnitCircle(final float radius){
                 return radius % 1.1f;
             }
+        }
+
+        /**
+         * Use default impl.
+         * 0.125 of Unit Circle.
+         */
+        public PieChartSpace(){
+            this(1f, 45f);
         }
         public PieChartSpace(final float radius, final float angle){
             this.radius = ValueConstraint.constraintRadiusToUnitCircle(radius);
