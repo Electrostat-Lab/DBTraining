@@ -34,6 +34,7 @@ public class PrefaceScreen extends Fragment {
         jmeSurfaceView.startRenderer(100);
         UiStateManager uiStateManager=new UiStateManager((ViewGroup) jmeSurfaceView.getParent());
         uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
+        uiStateManager.getChildUiStateByIndex(0).setOnClickListener((_view)->{});
         jmeSurfaceView.setOnRendererCompleted((application, settings) ->
                 uiStateManager.getChildUiStateByIndex(0).
                 animate().rotationBy(FastMath.interpolateLinear(uiStateManager.getChildUiStateByIndex(0).getRotation(), 180, 360))
@@ -46,8 +47,21 @@ public class PrefaceScreen extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        jmeSurfaceView.destroy();
+    public void onResume() {
+        super.onResume();
+        jmeSurfaceView.gainFocus();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        jmeSurfaceView.loseFocus();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        jmeSurfaceView.getLegacyApplication().stop(!jmeSurfaceView.isGLThreadPaused());
+
     }
 }
