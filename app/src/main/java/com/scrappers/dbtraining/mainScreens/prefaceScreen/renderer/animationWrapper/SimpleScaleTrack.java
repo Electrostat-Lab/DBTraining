@@ -12,8 +12,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  * @author pavl_g.
@@ -21,7 +21,7 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
 public class SimpleScaleTrack extends AnimEventEntity {
     private final Spatial dataBaseStack;
     private  AnimComposer animComposer;
-    private final TransformTrack transformTrack = new TransformTrack();
+    private final TransformTrack transformTrack = new TransformTrack(null, null, null, null, null);
     /*
      * Create new AnimClip
      * Add the animClip to new AnimControl System(AnimComposer)

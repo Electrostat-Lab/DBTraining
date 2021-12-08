@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ import com.jme3.anim.tween.action.Action;
 import com.jme3.app.Application;
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -43,7 +47,8 @@ import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrap
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.EmitterTween;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.SimpleScaleTrack;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.StackLoops;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.Listener;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.triggersUtils.TriggerID;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.triggersUtils.TriggerModel;
 import com.scrappers.dbtraining.notifications.NotificationUtils;
@@ -52,7 +57,7 @@ import com.scrappers.superiorExtendedEngine.menuStates.UiStatesLooper;
 import com.scrappers.superiorExtendedEngine.menuStates.uiPager.UiPager;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.Executors;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -81,6 +86,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
     private static boolean gridOn = false;
     private static int sortAlgorithm = UiPager.A_Z;
     private EmitterTween emitterTween;
+
     private final String[] triggersString = new String[]{
             "Scale Track",
             "Basic Armature",
@@ -164,33 +170,7 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         getStateManager().attach(new StackLoops("StackLoopsTrack", dataBaseStack));
         getStateManager().attach(new BasicTween("BasicTweenTrack", dataBaseStack));
         emitterTween = new EmitterTween("EmitterTween", dataBaseStack);
-        emitterTween.setAnimationEvents(new AnimEventEntity.AnimationEvents() {
-            @Override
-            public void onAnimationStart(AnimComposer animComposer, Action transformationStart) {
 
-            }
-
-            @Override
-            public void onAnimationEnd(AnimComposer animComposer, Action transformEnd) {
-                jmeSurfaceView.getLegacyApplication().enqueue(()->{
-                    emitterTween.electricWaves1.getMaterial().setColor("GlowColor", ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves2.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves3.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves4.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves5.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves6.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves7.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves8.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves9.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                    emitterTween.electricWaves10.getMaterial().setColor("GlowColor",ColorRGBA.randomColor().mult(ColorRGBA.LightGray));
-                });
-            }
-
-            @Override
-            public void onAnimationShuffle(AnimComposer animComposer, TransformTrack transformTrack, int i, int keyFrameIndex) {
-
-            }
-        });
         getStateManager().attach(emitterTween);
         getStateManager().attach(new BlendableAnimation("SimulateBottleFall", dataBaseStack));
         getStateManager().attach(new BlenderTween("BlenderImport", dataBaseStack));
@@ -255,11 +235,10 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         }else if(v.getId() == R.id.scheduleReset){
 
             ResetScheduler.Builder builder = new ResetScheduler.Builder(jmeSurfaceView.getContext());
-            LinearLayout scheduleResetMenu = (LinearLayout) uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.animation_selection_menu));
-            scheduleResetMenu.setLayoutParams(new LinearLayout.LayoutParams(displayMetrics.widthPixels,1200));
 
             builder.setActionListener(OrderReceiver.class, PendingIntent.FLAG_ONE_SHOT)
-                   .setAlarmType(AlarmManager.RTC_WAKEUP);
+                   .setAlarmType(AlarmManager.RTC_WAKEUP)
+                   .setScheduleTime(1000);
             ResetScheduler resetScheduler = new ResetScheduler(jmeSurfaceView.getContext());
             resetScheduler.schedule(builder);
 
@@ -325,7 +304,6 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             }
 
         }else if(v.getId() == TriggerID.basicTween){
-
             if(!getStateManager().getState(BasicTween.class).isEnabled()){
                 getStateManager().getState(BasicTween.class).setEnabled(true);
                 activateButton(v);
@@ -333,7 +311,50 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
                 getStateManager().getState(BasicTween.class).setEnabled(false);
                 deActivateButton(v);
             }
-
+//            getApplication().enqueue(()->{
+//                final Listener audioListener = new Listener(getStateManager(), 0);
+//                final AudioNode audioNode = loadElectricWaves();
+//                final Object[] hybridData = new Object[]{
+//                        "Hello",
+//                        123,
+//                        "It's my data"
+//                };
+//                //inject my data
+//                audioListener.injectData(hybridData);
+//                //inject time utilising action
+//                audioListener.setTimeUtilisingAction(application -> {
+//                    audioNode.play();
+//                    return audioNode.getAudioData().getDuration();
+//                });
+//                //inject interpolation action
+//                audioListener.setInterpolationAction(new Listener.InterpolationAction() {
+//                    @Override
+//                    public void onInterpolate(Application application, float time, float length, Object[] data) {
+//                        //TODO - do something when called by a parallel tween - this method would be called each interpolation - till we reach shockThunder.getAudioData().getDuration().
+//                        //TODO - check for the timings
+//                        if(time >= length) {
+//                            //TODO - listener to the end of the track
+//                            System.out.println(Arrays.toString(data) + " " + time + " Reached the full time");
+//                            //another way to run a non-repetitive action
+//    //                        audioListener.setEnabled(false);
+//                            audioNode.stop();
+//                        }else if(time <= length / 4f){
+//                            //TODO - listener to the middle of the track
+//                            System.out.println(Arrays.toString(data) + " " + time + " stills less than quarter the time");
+//                        }else if(time <= length / 2f){
+//                            //TODO - listener to the quarter of the track
+//                            System.out.println(Arrays.toString(data) + " " + time + " Reached half the time");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public boolean isRepetitiveAction() {
+//                        return true;
+//                    }
+//                });
+//                //start
+//                audioListener.setEnabled(true);
+//            });
         }else if(v.getId() == TriggerID.emitterTweenTrigger){
 
             if(!getStateManager().getState(EmitterTween.class).isEnabled()){
@@ -345,6 +366,8 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
             }
 
         }else if(v.getId() == TriggerID.blendableAnimTrigger){
+
+
 
             if(!getStateManager().getState(BlendableAnimation.class).isEnabled()){
                 getStateManager().getState(BlendableAnimation.class).setEnabled(true);
@@ -376,6 +399,13 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
 
         }
     }
+//    private AudioNode loadElectricWaves(){
+//        AudioNode electricWaves = new AudioNode(getApplication().getAssetManager(),"AssetsForRenderer/Audio/shocks.wav", AudioData.DataType.Stream);
+//        electricWaves.stop();
+//        electricWaves.setPositional(false);
+//        electricWaves.setLooping(true);
+//        return electricWaves;
+//    }
     /**
      * Changes the UI settings of the activated animation
      * @param v the android view to change it's UI.
@@ -581,11 +611,13 @@ public class AnimationFactory extends BaseAppState implements View.OnClickListen
         public ResetScheduler(final Context context){
             this.context = context;
         }
+        @SuppressLint("WrongConstant")
         public void schedule(Builder alarmBuilder){
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(alarmBuilder.getAlarmType(),
-                    System.currentTimeMillis()+alarmBuilder.getScheduleTime(),
+                    SystemClock.currentThreadTimeMillis() + alarmBuilder.getScheduleTime(),
                      alarmBuilder.getActionListener());
+            Toast.makeText(context, "Scheduling reset after 2 seconds !", LENGTH_LONG).show();
         }
 
         /**

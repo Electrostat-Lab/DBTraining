@@ -14,7 +14,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  * This class wraps multiple simple example for the new Animation System of Jme using multiple #{@link AnimClip}s , #{@link BaseAction}s , #{@link Tweens}.
@@ -63,8 +63,8 @@ public class BasicTween extends BaseAppState {
         final AnimClip stackOneClip=new AnimClip("BasicTweenOne");
         final AnimClip stackTwoClip=new AnimClip("BasicTweenTwo");
         //Transform tracks for each AnimClip
-        final TransformTrack stackOneTrack=new TransformTrack();
-        final TransformTrack stackTwoTrack=new TransformTrack();
+        final TransformTrack stackOneTrack=new TransformTrack(null, null, null, null, null);
+        final TransformTrack stackTwoTrack=new TransformTrack(null, null, null, null, null);
         //the 1st TransformTrack settings.
         stackOneTrack.setTarget(stackOne);
         //add the times for each KeyFrame , ie this array must be of the same length as the keyFrames array

@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders;
+package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc;
 
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.TransformTrack;
@@ -6,6 +6,10 @@ import com.jme3.anim.tween.action.Action;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 
+/**
+ * A rough animation event dispatcher.
+ * @author pavl_g.
+ */
 public class AnimEventEntity extends BaseAppState {
     protected AnimationEvents animationEvents;
     private float counter=0f;

@@ -1,13 +1,13 @@
 package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.AnimFactory;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.ArmatureMask;
 import com.jme3.anim.TransformTrack;
-import com.jme3.anim.tween.Tween;
-import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
 import com.jme3.anim.tween.action.BlendAction;
@@ -19,7 +19,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.customBlendAction.CustomBlendAction;
 
 /**
@@ -39,10 +39,8 @@ public class BlendableAnimation extends BaseAppState {
     private BlendSpace blendSpace;
     private BlendAction blendAction;
     private float count = 0;
-    private static final float minValueOfBlendSlider = 3;
-    private static final float maxValueOfBlendSlider = 6;
-    private static final float RADIUS = 0.887f;
     private boolean shuffleFlag = false;
+    private final float timeToReboot = 0f;
 
     public BlendableAnimation(final String id, final Spatial dataBaseStack){
         super(id);
@@ -57,20 +55,19 @@ public class BlendableAnimation extends BaseAppState {
 
         //1) collect the objects , you want to animate
         //2)create a TransformTrack
-        final TransformTrack capRotation=new TransformTrack();
-        final TransformTrack bottleTraction=new TransformTrack();
-        final TransformTrack magnifyingEffect = new TransformTrack();
+        final TransformTrack capRotation = new TransformTrack(null, null, null, null, null);
+        final TransformTrack bottleTraction = new TransformTrack(null, null, null, null, null);
 
         //3)initialize settings for TransformTracks
         //set a target object that implements HasLocalTransform(eg: Spatial , node , emitters , AudioNode , etc) for your track
         capRotation.setTarget(dataBaseStack);
-        capRotation.setTimes(new float[]{2,4,8,16});
+        capRotation.setTimes(new float[]{2, 4, 8, 16});
         //specify the totalAngleOfRotation(theta) then divide that by number of keyFrames , to get the angle for each frame
         capRotation.setKeyframesRotation(new Quaternion[]{
-                new Quaternion().fromAngleAxis(0f,Vector3f.UNIT_Y),
-                dataBaseStack.getLocalRotation().fromAngleAxis((float)Math.toRadians(120), Vector3f.UNIT_Y),
-                dataBaseStack.getLocalRotation().fromAngleAxis((float)Math.toRadians(120), Vector3f.UNIT_Y),
-                dataBaseStack.getLocalRotation().fromAngleAxis((float)Math.toRadians(120), Vector3f.UNIT_Y)
+                new Quaternion().fromAngleAxis(0f, Vector3f.UNIT_Y),
+                dataBaseStack.getLocalRotation().fromAngleAxis((float) Math.toRadians(120), Vector3f.UNIT_Y),
+                dataBaseStack.getLocalRotation().fromAngleAxis((float) Math.toRadians(120), Vector3f.UNIT_Y),
+                dataBaseStack.getLocalRotation().fromAngleAxis((float) Math.toRadians(120), Vector3f.UNIT_Y)
         });
 
         //set a target object that implements HasLocalTransform(eg: Spatial , node , emitters , AudioNode , etc) for your track
@@ -83,55 +80,37 @@ public class BlendableAnimation extends BaseAppState {
                 dataBaseStack.getLocalRotation().fromAngleAxis((float)Math.toRadians(30), Vector3f.UNIT_X)
         });
 
-        magnifyingEffect.setTarget(dataBaseStack);
-        magnifyingEffect.setTimes(new float[]{2,4,8,16});
-        magnifyingEffect.setKeyframesScale(new Vector3f[]{
-                dataBaseStack.getLocalScale().addLocal(0.03f, 0.05f, 0.02f),
-                dataBaseStack.getLocalScale().addLocal(0.04f, 0.08f, 0.03f),
-                dataBaseStack.getLocalScale().addLocal(0.05f, 0.09f, 0.04f),
-                dataBaseStack.getLocalScale().subtract(0.12f, 0.22f, 0.09f),
-        });
 
         //4)create AnimClips instances & instantiate them to use the TransformTracks
-        final AnimClip capRotationAnimClip=new AnimClip("CapRotation");
-        final AnimClip bottleTractionAnimClip=new AnimClip("BottleTraction");
-        final AnimClip magnifyingEffectAnimClip = new AnimClip("SlipperyBottle");
+        final AnimClip capRotationAnimClip = new AnimClip("CapRotation");
+        final AnimClip bottleTractionAnimClip = new AnimClip("BottleTraction");
 
         //5)set the tracks to the AnimClip
         capRotationAnimClip.setTracks(new TransformTrack[]{capRotation});
         bottleTractionAnimClip.setTracks(new TransformTrack[]{bottleTraction});
-        magnifyingEffectAnimClip.setTracks(new TransformTrack[]{magnifyingEffect});
 
         //6)add the AnimClips to the AnimComposer , the adds part
         animComposer.addAnimClip(capRotationAnimClip);
         animComposer.addAnimClip(bottleTractionAnimClip);
-        animComposer.addAnimClip(magnifyingEffectAnimClip);
 
         //8)Create ClipAction instances for the AnimClips (BlendableActions)
         final ClipAction capRotationClip = new ClipAction(capRotationAnimClip);
         final ClipAction bottleTractionClip = new ClipAction(bottleTractionAnimClip);
-        final ClipAction magnifyingEffectAction = new ClipAction(magnifyingEffectAnimClip);
 
-        bottleTractionClip.setTransitionLength(10f);
-        bottleTractionClip.setLength(10f);
-        capRotationClip.setLength(10f);
-        capRotationClip.setTransitionLength(10f);
-        magnifyingEffectAction.setTransitionLength(10f);
-        //9)feed the BlendableActions to a single BlendAction
 
-//        radialBlendSpace = new CustomBlendAction.RadialBlendSpace(minValueOfBlendSlider, maxValueOfBlendSlider);
-        //blendAction one
-        blendSpace = new CustomBlendAction.PieChartSpace(RADIUS, 45f);
+        blendSpace = new CustomBlendAction.PieChartSpace(0.5f, 180f);
+
         blendAction = new CustomBlendAction(blendSpace, capRotationClip, bottleTractionClip);
-        //blendAction 2
-        final CustomBlendAction blendAction1 = new CustomBlendAction(new CustomBlendAction.PieChartSpace(RADIUS, 180f), blendAction, magnifyingEffectAction);
+
         //baseAction supporting Tweens, blendingActions, & regular ClipActions
-        final BaseAction baseAction = new BaseAction(blendAction1);
-        baseAction.setLength(10f);
-        baseAction.setSpeed(2f);
+        final BaseAction baseAction = new BaseAction(blendAction);
+        baseAction.setSpeed(5f);
+
         //10)add that BlendAction to the AnimComposer using addAction(...)
         animComposer.addAction("SimulateBottleFall", baseAction);
         animComposer.makeLayer(LayerBuilder.LAYER_BLENDABLE_ANIM, new ArmatureMask());
+
+
     }
 
     @Override
@@ -156,27 +135,35 @@ public class BlendableAnimation extends BaseAppState {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void update(float tpf) {
         count += tpf;
         if(count > blendAction.getLength()){
-            if(!shuffleFlag) {
-                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(RADIUS);
-                //use full angle fraction(full area).
-                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(90);
+            if (!shuffleFlag) {
+//                ((CustomBlendAction.ContinuitySpace)blendSpace).setScaleFactor(0.3222f);
+//                ((CustomBlendAction.ContinuitySpace)blendSpace).setValues(new Vector4f[]{
+//                        new Vector4f(FastMath.PI * 0.004f, 0.2f ,0.2f ,0.4f),
+//                        new Vector4f(FastMath.PI * 0.05f, 0.2f ,0 ,0),
+//                });
+                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(0.5f);
+                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(200f);
                 setShuffleFlag(true);
-            }else{
-                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(RADIUS);
-                //use quarter of circle area(the fraction value).
-                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(150);
+            } else {
+//                ((CustomBlendAction.ContinuitySpace)blendSpace).setScaleFactor(1 / count *  ((CustomBlendAction.ContinuitySpace)blendSpace).getScaleFactor());
+//                ((CustomBlendAction.ContinuitySpace)blendSpace).setValues(new Vector4f[]{
+//                        new Vector4f(FastMath.PI, 0.02f ,0.2f ,0.4f),
+//                        new Vector4f(FastMath.PI * 0.025f, 0.2f ,0 ,0),
+//                });
+                ((CustomBlendAction.PieChartSpace) blendSpace).setRadius(1f);
+                ((CustomBlendAction.PieChartSpace) blendSpace).setAngle(150f);
                 setShuffleFlag(false);
             }
             //reset counter
             count = 0;
-            //shuffle actions for the regular run.
-//            ((CustomBlendAction.RadialBlendSpace)radialBlendSpace).shuffleActionIndices();
         }
     }
+
 
     public boolean isShuffleFlag() {
         return shuffleFlag;

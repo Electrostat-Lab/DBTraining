@@ -14,7 +14,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  * <b>A State class that wraps an example for a basic Armature Structure DataBaseStack 3D object with different Joints(Bones) that have some discs(cylinders)
@@ -57,8 +57,8 @@ public class BasicArmature extends BaseAppState {
         skinningControl.getAttachmentsNode(stackOne.getName()).attachChild(((Node)dataBaseStack).getChild("Cylinder.003"));
 
         //Parallel Transform tracks
-        final TransformTrack stackOneTrack=new TransformTrack();
-        final TransformTrack stackTwoTrack=new TransformTrack();
+        final TransformTrack stackOneTrack=new TransformTrack(null, null, null, null, null);
+        final TransformTrack stackTwoTrack=new TransformTrack(null, null, null, null, null);
 
         stackOneTrack.setTarget(stackOne);
         stackOneTrack.setTimes(new float[]{8,16,32,64});

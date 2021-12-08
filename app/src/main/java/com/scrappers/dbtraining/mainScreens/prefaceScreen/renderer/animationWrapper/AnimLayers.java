@@ -10,7 +10,7 @@ import com.jme3.anim.tween.action.ClipAction;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 public class AnimLayers extends BaseAppState {
     private final Spatial dataBaseStack;

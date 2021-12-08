@@ -10,7 +10,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  * <b>A Simple Class to demonstrate how to load an AnimComposer#{@link AnimComposer} from a blender model using #{@link Spatial#getControl(Class)} </b>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.jme3.app.jmeSurfaceView.JmeSurfaceView;
 import com.jme3.math.FastMath;
 import com.scrappers.dbtraining.R;
@@ -17,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import static com.scrappers.dbtraining.navigation.Navigation.drawerLayout;
 
 public class PrefaceScreen extends Fragment {
-    private JmeSurfaceView jmeSurfaceView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,13 +26,13 @@ public class PrefaceScreen extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Toolbar toolbar=view.findViewById(R.id.toolbar);
+        final Toolbar toolbar=view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        jmeSurfaceView=view.findViewById(R.id.jmeSurfaceView);
+        final JmeSurfaceView jmeSurfaceView = view.findViewById(R.id.jmeSurfaceView);
         jmeSurfaceView.setLegacyApplication(new Renderer(jmeSurfaceView));
         jmeSurfaceView.startRenderer(100);
-        UiStateManager uiStateManager=new UiStateManager((ViewGroup) jmeSurfaceView.getParent());
+        final UiStateManager uiStateManager=new UiStateManager((ViewGroup) jmeSurfaceView.getParent());
         uiStateManager.attachUiState(uiStateManager.fromXML(R.layout.splash_screen)).setId('S');
         uiStateManager.getChildUiStateByIndex(0).setOnClickListener((_view)->{});
         jmeSurfaceView.setOnRendererCompleted((application, settings) ->
@@ -46,22 +46,4 @@ public class PrefaceScreen extends Fragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        jmeSurfaceView.gainFocus();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        jmeSurfaceView.loseFocus();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        jmeSurfaceView.getLegacyApplication().stop(!jmeSurfaceView.isGLThreadPaused());
-
-    }
 }

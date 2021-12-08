@@ -13,7 +13,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  * @author pavl_g.
@@ -44,8 +44,8 @@ public class StackLoops extends BaseAppState {
         skinningControl.getAttachmentsNode("StackTwo").attachChild(stackTwo);
 
         //Parallel Transform tracks
-        final TransformTrack stackOneTrack=new TransformTrack();
-        final TransformTrack stackTwoTrack=new TransformTrack();
+        final TransformTrack stackOneTrack=new TransformTrack(null, null, null, null, null);
+        final TransformTrack stackTwoTrack=new TransformTrack(null, null, null, null, null);
 
         final Joint jointOne = skinningControl.getArmature().getJoint("StackOne");
         final Joint jointTwo = skinningControl.getArmature().getJoint("StackTwo");

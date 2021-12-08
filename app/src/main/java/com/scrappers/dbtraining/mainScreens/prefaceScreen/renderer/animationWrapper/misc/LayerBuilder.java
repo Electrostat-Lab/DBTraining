@@ -1,4 +1,4 @@
-package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders;
+package com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc;
 
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.AnimLayers;
 import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.BasicArmature;

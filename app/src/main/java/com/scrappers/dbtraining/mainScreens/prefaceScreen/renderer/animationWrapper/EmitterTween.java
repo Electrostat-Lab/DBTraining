@@ -22,14 +22,14 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.AnimEventEntity;
-import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.builders.LayerBuilder;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.AnimEventEntity;
+import com.scrappers.dbtraining.mainScreens.prefaceScreen.renderer.animationWrapper.misc.LayerBuilder;
 
 /**
  *
  * @author pavl_g.
  */
-public class EmitterTween extends AnimEventEntity {
+public class EmitterTween extends BaseAppState {
     private final Spatial dataBaseStack;
     private AnimComposer animComposer;
     private AudioNode shockThunder;
@@ -44,6 +44,7 @@ public class EmitterTween extends AnimEventEntity {
     public ParticleEmitter electricWaves8;
     public ParticleEmitter electricWaves9;
     public ParticleEmitter electricWaves10;
+    private ClipAction modelClipAction;
     public EmitterTween(final String id, final Spatial dataBaseStack){
         super(id);
         this.dataBaseStack=dataBaseStack;
@@ -52,9 +53,6 @@ public class EmitterTween extends AnimEventEntity {
     protected void initialize(Application app) {
         setEnabled(false);
         animComposer = dataBaseStack.getControl(AnimComposer.class);
-        setAnimComposer(animComposer);
-        setDelayStart(0.55f);
-        setDelayEnd(0f);
         shockThunder = loadElectricWaves();
         //initialize the electricWaves particle Emitters instances w/ their properties.
         electricWaves1 = loadElectricWaves(0);
@@ -117,17 +115,17 @@ public class EmitterTween extends AnimEventEntity {
         }
 
         //create 4 TransformTracks that would run in parallel
-        final TransformTrack electricWavesTrack1=new TransformTrack();
-        final TransformTrack electricWavesTrack2=new TransformTrack();
-        final TransformTrack electricWavesTrack3=new TransformTrack();
-        final TransformTrack electricWavesTrack4=new TransformTrack();
-        final TransformTrack electricWavesTrack5=new TransformTrack();
-        final TransformTrack electricWavesTrack6=new TransformTrack();
-        final TransformTrack electricWavesTrack7=new TransformTrack();
-        final TransformTrack electricWavesTrack8=new TransformTrack();
-        final TransformTrack electricWavesTrack9=new TransformTrack();
-        final TransformTrack electricWavesTrack10=new TransformTrack();
-        final TransformTrack shockThunderTrack=new TransformTrack();
+        final TransformTrack electricWavesTrack1=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack2=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack3=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack4=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack5=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack6=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack7=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack8=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack9=new TransformTrack(null, null, null, null, null);
+        final TransformTrack electricWavesTrack10=new TransformTrack(null, null, null, null, null);
+        final TransformTrack shockThunderTrack=new TransformTrack(null, null, null, null, null);
         //create 3 AnimClips , each of which would hold one track
         final AnimClip waves1Clip=new AnimClip(electricWaves1.getName());
         final AnimClip waves2Clip=new AnimClip(electricWaves2.getName());
@@ -244,13 +242,8 @@ public class EmitterTween extends AnimEventEntity {
                 new Vector3f().interpolateLocal(electricWaves10.getLocalTranslation(),dataBaseStack.getLocalTranslation(),0.5f),
         });
 
-        shockThunderTrack.setTimes(new float[]{2,4,8,16});
-        shockThunderTrack.setKeyframesScale(new Vector3f[]{
-                new Vector3f().interpolateLocal(shockThunder.getLocalTranslation(),dataBaseStack.getLocalTranslation(),0),
-                new Vector3f().interpolateLocal(shockThunder.getLocalTranslation(),dataBaseStack.getLocalTranslation(),0.5f),
-                new Vector3f().interpolateLocal(shockThunder.getLocalTranslation(),dataBaseStack.getLocalTranslation(),1f),
-                new Vector3f().interpolateLocal(shockThunder.getLocalTranslation(),dataBaseStack.getLocalTranslation(),0.5f),
-        });
+        shockThunderTrack.setTimes(new float[]{shockThunder.getAudioData().getDuration()});
+
 
         //the adds part
         waves1Clip.setTracks(new TransformTrack[]{electricWavesTrack1});
@@ -291,7 +284,7 @@ public class EmitterTween extends AnimEventEntity {
         ClipAction thunderClipAction=new ClipAction(thunderClip);
 
         //Bind the ParticleEmitter to the model through the tween , baseAction & the animComposer
-        final TransformTrack modelTrack=new TransformTrack();
+        final TransformTrack modelTrack=new TransformTrack(null, null, null, null, null);
         final AnimClip modelAnimClip=new AnimClip(dataBaseStack.getName());
 
         modelTrack.setTarget(dataBaseStack);
@@ -303,18 +296,22 @@ public class EmitterTween extends AnimEventEntity {
         modelAnimClip.setTracks(new TransformTrack[]{modelTrack});
         animComposer.addAnimClip(modelAnimClip);
         //create a ClipAction for that AnimClip to be attached to the BaseAction & Handled by the tween thread
-        ClipAction modelClipAction=new ClipAction(modelAnimClip);
+        modelClipAction=new ClipAction(modelAnimClip);
 
         //Create a BaseAction that would hold a Tween thread to run these actions in parallel
         //bind electric sound to the tween of actions
-        shockMyScreen=new BaseAction(Tweens.parallel(
-                waves1ClipAction,waves2ClipAction,
-                waves3ClipAction,waves4ClipAction,
-                waves5ClipAction,waves6ClipAction,
-                waves7ClipAction,waves8ClipAction,
-                waves9ClipAction,waves10ClipAction,
-                Tweens.parallel(modelClipAction,thunderClipAction)
-        ));
+        shockMyScreen= new BaseAction(Tweens.parallel(Tweens.callTweenMethod(shockThunder.getAudioData().getDuration(), this, "onInterpolation", "Hi from tween, after the sound finishes"),
+                modelClipAction,
+                waves1ClipAction,
+                waves2ClipAction,
+                waves3ClipAction,
+                waves4ClipAction,
+                waves5ClipAction,
+                waves6ClipAction,
+                waves7ClipAction,
+                waves8ClipAction,
+                waves9ClipAction,
+                waves10ClipAction));
         //the speed
         shockMyScreen.setLength(20f);
         shockMyScreen.setSpeed(10f);
@@ -323,10 +320,21 @@ public class EmitterTween extends AnimEventEntity {
         //make a new Animation Layer that would hold a one current running action.....
         animComposer.makeLayer(LayerBuilder.LAYER_EMITTER_TWEEN, new ArmatureMask());
 
-        setAction(shockMyScreen);
-
     }
-
+    private void onInterpolation(final float time, final String args){
+        //TODO - do something when called by a parallel tween - this method would be called each interpolation - till we reach shockThunder.getAudioData().getDuration().
+        //TODO - check for the timings
+        if(time >= shockThunder.getAudioData().getDuration()) {
+            //TODO - listener to the end of the track
+            System.out.println(args + " " + time + " Reached the full time");
+        }else if(time <= shockThunder.getAudioData().getDuration() / 4f){
+            //TODO - listener to the middle of the track
+            System.out.println(args + " " + time + " stills less than quarter the time");
+        }else if(time <= shockThunder.getAudioData().getDuration() / 2f){
+            //TODO - listener to the quarter of the track
+            System.out.println(args + " " + time + " Reached half the time");
+        }
+    }
     @Override
     protected void cleanup(Application app) {
         if(animComposer != null){
@@ -389,10 +397,10 @@ public class EmitterTween extends AnimEventEntity {
         return electricWaves;
     }
     private AudioNode loadElectricWaves(){
-            AudioNode electricWaves=new AudioNode(getApplication().getAssetManager(),"AssetsForRenderer/Audio/shocks.wav",AudioData.DataType.Stream);
-            electricWaves.stop();
-            electricWaves.setPositional(false);
-            electricWaves.setLooping(true);
+        AudioNode electricWaves = new AudioNode(getApplication().getAssetManager(),"AssetsForRenderer/Audio/shocks.wav",AudioData.DataType.Stream);
+        electricWaves.stop();
+        electricWaves.setPositional(false);
+        electricWaves.setLooping(true);
         return electricWaves;
     }
 
